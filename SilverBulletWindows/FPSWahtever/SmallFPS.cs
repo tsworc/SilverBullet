@@ -875,18 +875,19 @@ namespace MknGames.FPSWahtever
         Vector3 renderLightDir = Vector3.Zero;
         RenderTarget2D deferredBuffer0;
         RenderTarget2D deferredBufferDepth;
-        const int shadowMapCount = 4;
+        //inst shadows
+        const int shadowMapCount = 0;
         //RenderTarget3D cascadeShadowMaps;
         RenderTarget2D[] cascadeShadowMaps = new RenderTarget2D[shadowMapCount];
         Matrix[] shadowViews = new Matrix[shadowMapCount];
         Matrix[] shadowProjections = new Matrix[shadowMapCount];
         Matrix[] shadowViewProjections = new Matrix[shadowMapCount];
-        float[] cascadeShadowDepthBiasWorld = new float[shadowMapCount] { 0.1f, 0.2f,0.4f,0.8f };
-        float[] cascadeShadowSoftSampleDist = new float[shadowMapCount] { 1, 1, 1, 1 };
+        float[] cascadeShadowDepthBiasWorld = new float[] { 0.1f, 0.2f,0.4f,0.8f };
+        float[] cascadeShadowSoftSampleDist = new float[] { 1, 1, 1, 1 };
         Vector3 lightOffset;
-        float[] shadowDistances = new float[shadowMapCount] { 300, 300, 300, 300 };
-        float[] shadowProjSizes  = new float[shadowMapCount] { 15, 30, 100, 300};
-        bool[] shadowCullCounterclockwise = new bool[shadowMapCount] { true, true, true, false };
+        float[] shadowDistances = new float[] { 300, 300, 300, 300 };
+        float[] shadowProjSizes  = new float[] { 15, 30, 100, 300};
+        bool[] shadowCullCounterclockwise = new bool[] { true, true, true, false };
         float shadowNonLinearCutoff = 1;
         float[] cascadingNonLinearCutoffs = new float[4] { 1, 3, 27, 59 };
         Vector2[] nonLinearMinsPlusRanges = new Vector2[4];
@@ -8291,7 +8292,7 @@ namespace MknGames.FPSWahtever
                 instanceCubeIterator = 0;
                 foreach (Bullet b in allbullets)
                 {
-                    if (b.phy.vel.LengthSquared() == 0)
+                    if (true)//b.phy.vel.LengthSquared() == 0)
                     {
                         instanceTransforms[instanceCubeIterator].position = new Vector4(b.phy.pos, 0);
                         instanceTransforms[instanceCubeIterator++].scale = new Vector4(new Vector3(b.size / 2), 1);
@@ -8308,35 +8309,36 @@ namespace MknGames.FPSWahtever
                         (float)Math.Pow(b.size / 2, 3);
                     //float s = bul.size;
                     float l = (B - A).Length();
+                    float s = 0;
                     //float amt = 10;
-                    float currentRadius = b.size / 2;
-                    float capsuleVolume = 0;
-                    int iterations = 0;
-                    float dif;
-                    do
-                    {
-                        //get volume of capsule currently
-                        float factorA = MathHelper.Pi * (currentRadius * currentRadius);
-                        float factorB = (4f / 3f) * currentRadius + l;
-                        capsuleVolume = factorA * factorB;
-                        //check if its within a threshhold of the real volume
-                        float vdelta = volume - capsuleVolume;
-                        dif = Math.Abs(vdelta);
-                        //shrink or grow radius by amount
-                        currentRadius += 0.01f * vdelta;
-                        //decrease amount
-                        //amt *= 0.5f;
-                        //if amount is very low than give up
-                        iterations++;
-                    } while (dif > 0.01f || iterations < 30);
-                    float s = currentRadius * 2;
+                    //float currentRadius = b.size / 2;
+                    //float capsuleVolume = 0;
+                    //int iterations = 0;
+                    //float dif;
+                    //do
+                    //{
+                        ////get volume of capsule currently
+                        //float factorA = MathHelper.Pi * (currentRadius * currentRadius);
+                        //float factorB = (4f / 3f) * currentRadius + l;
+                        //capsuleVolume = factorA * factorB;
+                        ////check if its within a threshhold of the real volume
+                        //float vdelta = volume - capsuleVolume;
+                        //dif = Math.Abs(vdelta);
+                        ////shrink or grow radius by amount
+                        //currentRadius += 0.01f * vdelta;
+                        ////decrease amount
+                        ////amt *= 0.5f;
+                        ////if amount is very low than give up
+                        //iterations++;
+                    //} while (dif > 0.01f || iterations < 30);
+                    //s = currentRadius * 2;
                     {
                         //volume of cube = w * h * d
                         //volume / d = w * h
                         //h = w
                         //volume / d = w ^ 2
                         //w = sqrt(volume / d)
-                        //float s = (float)Math.Sqrt(volume / l);
+                        s = (float)Math.Sqrt(volume / l);
                     }
                     if (b.skipNextAdvance)
                         l = 0.01f;
@@ -8354,13 +8356,13 @@ namespace MknGames.FPSWahtever
                         Matrix.CreateTranslation(0, 0, -1) *
                         Matrix.CreateScale(s / 2, s / 2, length / 2) *
                         orientation;
-                    DrawModel(surfaceCylinder, world, orientation, pass);
+                    DrawModel(game1.cubeModel, world, orientation, pass);
 
-                    Vector3 scale = new Vector3(s / 2);// - 0.1f);
-                    instanceTransforms[instanceCubeIterator].position = new Vector4(start, 0);
-                    instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
-                    instanceTransforms[instanceCubeIterator].position = new Vector4(end, 0);
-                    instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
+                    //Vector3 scale = new Vector3(s / 2);// - 0.1f);
+                    //instanceTransforms[instanceCubeIterator].position = new Vector4(start, 0);
+                    //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
+                    //instanceTransforms[instanceCubeIterator].position = new Vector4(end, 0);
+                    //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
                 }
 
                 SetDeferredParametersGeometry(Matrix.Identity, Matrix.Identity);
