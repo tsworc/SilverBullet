@@ -4709,28 +4709,28 @@ namespace MknGames.FPSWahtever
                 //}
 
                 //bullet hit bullet
-                for(int j = i + 1; j < allbullets.Count; ++j)
-                {
-                    Bullet b2 = allbullets[j];
-                    if (b2.off || bul.off) continue;
-                    BoundingSphere b2s = new BoundingSphere(b2.phy.pos, b2.size / 2);
-                    ContactData contact = new ContactData();
-                    bool hit = intersectSphereSphere(sv, b2s, out contact.norm, out contact.pen);
-                    float length = pv.Length();
-                    float? rhit = new Ray(sv.Center, pv/length).Intersects(b2s);
-                    if(rhit.HasValue && rhit.Value <= length)
-                    {
-                        hit = true;
-                    }
-                    if (hit)
-                    {
-                        bul.off = true;
-                        b2.off = true;
-                        break;
-                        //contact.contact = sv.Center - contact.norm * (sv.Radius - contact.pen);
-                        //if(contact.)
-                    }
-                }
+                //for(int j = i + 1; j < allbullets.Count; ++j)
+                //{
+                //    Bullet b2 = allbullets[j];
+                //    if (b2.off || bul.off) continue;
+                //    BoundingSphere b2s = new BoundingSphere(b2.phy.pos, b2.size / 2);
+                //    ContactData contact = new ContactData();
+                //    bool hit = intersectSphereSphere(sv, b2s, out contact.norm, out contact.pen);
+                //    float length = pv.Length();
+                //    float? rhit = new Ray(sv.Center, pv/length).Intersects(b2s);
+                //    if(rhit.HasValue && rhit.Value <= length)
+                //    {
+                //        hit = true;
+                //    }
+                //    if (hit)
+                //    {
+                //        bul.off = true;
+                //        b2.off = true;
+                //        break;
+                //        //contact.contact = sv.Center - contact.norm * (sv.Radius - contact.pen);
+                //        //if(contact.)
+                //    }
+                //}
 
                 //bullet hit gun, gun hit bullet
                 for (int j = 0; j < allguns.Count; ++j)
