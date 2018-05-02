@@ -60,7 +60,6 @@ namespace MknGames.FPSWahtever
         Node currentNode;
         Node currentFieldParent;
         Action setFieldAction = null;
-        BindingSource bindingSource;
 
         public bool SetReady()
         {
@@ -225,6 +224,7 @@ namespace MknGames.FPSWahtever
             button2.Enabled = currentNode != root;
             listBox1.Items.Clear();
             dataGridView1.Rows.Clear();
+            methodDataGridView.Rows.Clear();
             string searchText = searchTextBox.Text.ToLower();
             for (int i = 0; i < currentNode.members.Length; ++i)
             {
@@ -233,9 +233,16 @@ namespace MknGames.FPSWahtever
                 if (fieldText.Contains(searchText) == true)
                 {
                     listBox1.Items.Add(a);
-                    object value;
-                    GetValueFromMemberInfo(a, out value);
-                    dataGridView1.Rows.Add(a.Name, a.MemberType, a, value);
+                    if (a is MethodBase)
+                    {
+                        methodDataGridView.Rows.Add(a.Name, a, a.MemberType);
+                    }
+                    else
+                    {
+                        object value;
+                        GetValueFromMemberInfo(a, out value);
+                        dataGridView1.Rows.Add(a.Name, a.MemberType, a, value);
+                    }
                     if (a == currentMember)
                     {
                         listBox1.SelectedItem = a;

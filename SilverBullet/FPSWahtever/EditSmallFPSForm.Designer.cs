@@ -46,7 +46,12 @@ namespace MknGames.FPSWahtever
             this.executeButton = new System.Windows.Forms.Button();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.methodDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.typeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.data = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.searchTextBox = new System.Windows.Forms.TextBox();
@@ -61,14 +66,14 @@ namespace MknGames.FPSWahtever
             this.button4 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.typeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.data = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.methodNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.methodInfoColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.methodTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.methodDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -85,7 +90,7 @@ namespace MknGames.FPSWahtever
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(3, 83);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(391, 212);
+            this.listBox1.Size = new System.Drawing.Size(391, 43);
             this.listBox1.Sorted = true;
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
@@ -222,13 +227,14 @@ namespace MknGames.FPSWahtever
             this.listBox2.FormattingEnabled = true;
             this.listBox2.Location = new System.Drawing.Point(400, 44);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(297, 251);
+            this.listBox2.Size = new System.Drawing.Size(297, 30);
             this.listBox2.TabIndex = 8;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             this.listBox2.DoubleClick += new System.EventHandler(this.listBox2_DoubleClick);
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.methodDataGridView);
             this.panel1.Controls.Add(this.dataGridView1);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.flowLayoutPanel1);
@@ -240,6 +246,22 @@ namespace MknGames.FPSWahtever
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1033, 558);
             this.panel1.TabIndex = 9;
+            // 
+            // methodDataGridView
+            // 
+            this.methodDataGridView.AllowUserToAddRows = false;
+            this.methodDataGridView.AllowUserToDeleteRows = false;
+            this.methodDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.methodDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.methodDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.methodNameColumn,
+            this.methodInfoColumn,
+            this.methodTypeColumn});
+            this.methodDataGridView.Location = new System.Drawing.Point(4, 341);
+            this.methodDataGridView.Name = "methodDataGridView";
+            this.methodDataGridView.ReadOnly = true;
+            this.methodDataGridView.Size = new System.Drawing.Size(692, 214);
+            this.methodDataGridView.TabIndex = 11;
             // 
             // dataGridView1
             // 
@@ -253,13 +275,33 @@ namespace MknGames.FPSWahtever
             this.typeColumn,
             this.data,
             this.value});
-            this.dataGridView1.Location = new System.Drawing.Point(4, 302);
+            this.dataGridView1.Location = new System.Drawing.Point(3, 132);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(693, 253);
+            this.dataGridView1.Size = new System.Drawing.Size(693, 202);
             this.dataGridView1.TabIndex = 10;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentDoubleClick);
+            // 
+            // name
+            // 
+            this.name.HeaderText = "name";
+            this.name.Name = "name";
+            this.name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // typeColumn
+            // 
+            this.typeColumn.HeaderText = "typeColumn";
+            this.typeColumn.Name = "typeColumn";
+            // 
+            // data
+            // 
+            this.data.HeaderText = "data";
+            this.data.Name = "data";
+            // 
+            // value
+            // 
+            this.value.HeaderText = "value";
+            this.value.Name = "value";
             // 
             // panel3
             // 
@@ -379,30 +421,24 @@ namespace MknGames.FPSWahtever
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // name
+            // methodNameColumn
             // 
-            this.name.HeaderText = "name";
-            this.name.Name = "name";
-            this.name.ReadOnly = true;
-            this.name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.methodNameColumn.HeaderText = "name";
+            this.methodNameColumn.Name = "methodNameColumn";
+            this.methodNameColumn.ReadOnly = true;
+            this.methodNameColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
-            // typeColumn
+            // methodInfoColumn
             // 
-            this.typeColumn.HeaderText = "typeColumn";
-            this.typeColumn.Name = "typeColumn";
-            this.typeColumn.ReadOnly = true;
+            this.methodInfoColumn.HeaderText = "Member Info";
+            this.methodInfoColumn.Name = "methodInfoColumn";
+            this.methodInfoColumn.ReadOnly = true;
             // 
-            // data
+            // methodTypeColumn
             // 
-            this.data.HeaderText = "data";
-            this.data.Name = "data";
-            this.data.ReadOnly = true;
-            // 
-            // value
-            // 
-            this.value.HeaderText = "value";
-            this.value.Name = "value";
-            this.value.ReadOnly = true;
+            this.methodTypeColumn.HeaderText = "type";
+            this.methodTypeColumn.Name = "methodTypeColumn";
+            this.methodTypeColumn.ReadOnly = true;
             // 
             // EditSmallFPSForm
             // 
@@ -419,6 +455,7 @@ namespace MknGames.FPSWahtever
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.methodDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
@@ -469,5 +506,9 @@ namespace MknGames.FPSWahtever
         private System.Windows.Forms.DataGridViewTextBoxColumn typeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn data;
         private System.Windows.Forms.DataGridViewTextBoxColumn value;
+        private System.Windows.Forms.DataGridView methodDataGridView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn methodNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn methodInfoColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn methodTypeColumn;
     }
 }
