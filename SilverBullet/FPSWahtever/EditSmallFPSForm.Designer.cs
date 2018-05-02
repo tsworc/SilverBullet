@@ -54,12 +54,13 @@ namespace MknGames.FPSWahtever
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.cubes_SubdivideButton = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
             this.button4 = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.listBox3 = new System.Windows.Forms.ListBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
@@ -69,8 +70,8 @@ namespace MknGames.FPSWahtever
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.flowLayoutPanel4.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.flowLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox1
@@ -79,7 +80,7 @@ namespace MknGames.FPSWahtever
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(3, 83);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(391, 355);
+            this.listBox1.Size = new System.Drawing.Size(391, 225);
             this.listBox1.Sorted = true;
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
@@ -223,6 +224,7 @@ namespace MknGames.FPSWahtever
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.listBox3);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.flowLayoutPanel1);
             this.panel1.Controls.Add(this.flowLayoutPanel3);
@@ -231,7 +233,7 @@ namespace MknGames.FPSWahtever
             this.panel1.Controls.Add(this.listBox1);
             this.panel1.Location = new System.Drawing.Point(6, 39);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(942, 459);
+            this.panel1.Size = new System.Drawing.Size(942, 558);
             this.panel1.TabIndex = 9;
             // 
             // panel3
@@ -311,9 +313,13 @@ namespace MknGames.FPSWahtever
             this.tabPage2.Text = "Cubes";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // openFileDialog1
+            // panel4
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.panel4.Controls.Add(this.flowLayoutPanel4);
+            this.panel4.Location = new System.Drawing.Point(6, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(412, 594);
+            this.panel4.TabIndex = 1;
             // 
             // flowLayoutPanel4
             // 
@@ -335,14 +341,6 @@ namespace MknGames.FPSWahtever
             this.cubes_SubdivideButton.UseVisualStyleBackColor = true;
             this.cubes_SubdivideButton.Click += new System.EventHandler(this.cubes_SubdivideButton_Click);
             // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.flowLayoutPanel4);
-            this.panel4.Location = new System.Drawing.Point(6, 3);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(412, 594);
-            this.panel4.TabIndex = 1;
-            // 
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(3, 32);
@@ -351,6 +349,20 @@ namespace MknGames.FPSWahtever
             this.button4.TabIndex = 1;
             this.button4.Text = "button4";
             this.button4.UseVisualStyleBackColor = true;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // listBox3
+            // 
+            this.listBox3.DisplayMember = "Name";
+            this.listBox3.FormattingEnabled = true;
+            this.listBox3.Location = new System.Drawing.Point(3, 314);
+            this.listBox3.Name = "listBox3";
+            this.listBox3.Size = new System.Drawing.Size(391, 238);
+            this.listBox3.TabIndex = 10;
+            this.listBox3.SelectedIndexChanged += new System.EventHandler(this.listBox3_SelectedIndexChanged);
             // 
             // EditSmallFPSForm
             // 
@@ -373,8 +385,8 @@ namespace MknGames.FPSWahtever
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            this.flowLayoutPanel4.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.flowLayoutPanel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -411,5 +423,6 @@ namespace MknGames.FPSWahtever
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button cubes_SubdivideButton;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ListBox listBox3;
     }
 }

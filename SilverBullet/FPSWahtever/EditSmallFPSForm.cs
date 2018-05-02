@@ -97,6 +97,12 @@ namespace MknGames.FPSWahtever
             SetCurrentMemberInfo(f);
         }
 
+        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MemberInfo f = (MemberInfo)(listBox3.SelectedItem);
+            SetCurrentMemberInfo(f);
+        }
+
         void SetCurrentMemberInfo(MemberInfo info)
         {
             currentFieldParent = currentNode;
@@ -210,6 +216,7 @@ namespace MknGames.FPSWahtever
             button1.Enabled = currentNode.parent != null;
             button2.Enabled = currentNode != root;
             listBox1.Items.Clear();
+            listBox3.Items.Clear();
             string searchText = searchTextBox.Text.ToLower();
             for (int i = 0; i < currentNode.members.Length; ++i)
             {
@@ -217,7 +224,14 @@ namespace MknGames.FPSWahtever
                 string fieldText = a.Name.ToLower();
                 if (fieldText.Contains(searchText) == true)
                 {
-                    listBox1.Items.Add(a);
+                    if(a is MethodInfo)
+                    {
+                        listBox3.Items.Add(a);
+                    }
+                    if (a is PropertyInfo || a is FieldInfo)
+                    {
+                        listBox1.Items.Add(a);
+                    }
                     if (a == currentMember)
                     {
                         listBox1.SelectedItem = a;
