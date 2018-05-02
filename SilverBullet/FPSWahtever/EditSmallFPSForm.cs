@@ -211,6 +211,7 @@ namespace MknGames.FPSWahtever
             button1.Enabled = currentNode.parent != null;
             button2.Enabled = currentNode != root;
             listBox1.Items.Clear();
+            dataGridView1.Rows.Clear();
             string searchText = searchTextBox.Text.ToLower();
             for (int i = 0; i < currentNode.members.Length; ++i)
             {
@@ -219,6 +220,7 @@ namespace MknGames.FPSWahtever
                 if (fieldText.Contains(searchText) == true)
                 {
                     listBox1.Items.Add(a);
+                    dataGridView1.Rows.Add(a.Name, a.MemberType, a);
                     if (a == currentMember)
                     {
                         listBox1.SelectedItem = a;
