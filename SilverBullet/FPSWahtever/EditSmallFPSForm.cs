@@ -171,17 +171,20 @@ namespace MknGames.FPSWahtever
         {
             if (listBox1.SelectedItem == null)
                 return;
-            MethodInfo getValue = listBox1.SelectedItem.GetType().GetMethod("GetValue", new Type[] { typeof(object) });
+            SetNodeFromMemberInfo((MemberInfo)listBox1.SelectedItem);
+        }
+        public void SetNodeFromMemberInfo(MemberInfo member)
+        {
+            MethodInfo getValue = member.GetType().GetMethod("GetValue", new Type[] { typeof(object) });
             //FieldInfo next = (FieldInfo)(listBox1.SelectedItem);
             if (getValue == null)
                 return;
-            object data = getValue.Invoke(listBox1.SelectedItem, new object[] { currentNode.data });
+            object data = getValue.Invoke(member, new object[] { currentNode.data });
             if (data == null)
                 return;
             Node newNode = new Node(currentNode,
                 data,
-                (listBox1.SelectedItem as MemberInfo).Name);
-            listBox1.Enabled = false;
+                member.Name);
             SetNode(newNode);
         }
         void listBox2_DoubleClick(object sender, EventArgs e)
@@ -419,11 +422,7 @@ expression);
         private void DataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             var row = dataGridView1.Rows[e.RowIndex];
-            //var col = dataGridView1.Columns[e.ColumnIndex];
-            //DataGridViewRow dataRow = (DataGridViewRow)data;
-            //var cell = dataRow.Cells[e.ColumnIndex];
-            Node newNode = new Node(currentNode, row.Cells[2].Value, (string)row.Cells[0].Value);
-            SetNode(newNode);
+            SetNodeFromMemberInfo((MemberInfo)row.Cells[2].Value);
         }
 
         //reload shader

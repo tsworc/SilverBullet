@@ -46,6 +46,7 @@ namespace MknGames.FPSWahtever
             this.executeButton = new System.Windows.Forms.Button();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.searchTextBox = new System.Windows.Forms.TextBox();
@@ -60,7 +61,6 @@ namespace MknGames.FPSWahtever
             this.button4 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.data = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -68,6 +68,7 @@ namespace MknGames.FPSWahtever
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -75,7 +76,6 @@ namespace MknGames.FPSWahtever
             this.tabPage2.SuspendLayout();
             this.panel4.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // listBox1
@@ -240,6 +240,25 @@ namespace MknGames.FPSWahtever
             this.panel1.Size = new System.Drawing.Size(1033, 558);
             this.panel1.TabIndex = 9;
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.name,
+            this.Column2,
+            this.data});
+            this.dataGridView1.Location = new System.Drawing.Point(4, 302);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(390, 253);
+            this.dataGridView1.TabIndex = 10;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentDoubleClick);
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.label3);
@@ -358,34 +377,24 @@ namespace MknGames.FPSWahtever
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.name,
-            this.Column2,
-            this.data});
-            this.dataGridView1.Location = new System.Drawing.Point(4, 302);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(390, 253);
-            this.dataGridView1.TabIndex = 10;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler( DataGridView1_CellContentDoubleClick);
-            // 
             // name
             // 
             this.name.HeaderText = "name";
             this.name.Name = "name";
+            this.name.ReadOnly = true;
+            this.name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Column2";
             this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
             // 
             // data
             // 
             this.data.HeaderText = "data";
             this.data.Name = "data";
+            this.data.ReadOnly = true;
             // 
             // EditSmallFPSForm
             // 
@@ -402,6 +411,7 @@ namespace MknGames.FPSWahtever
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -410,7 +420,6 @@ namespace MknGames.FPSWahtever
             this.tabPage2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.flowLayoutPanel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
