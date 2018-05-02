@@ -60,7 +60,7 @@ namespace MknGames.FPSWahtever
         Node currentNode;
         Node currentFieldParent;
         Action setFieldAction = null;
-        
+        BindingSource bindingSource;
 
         public bool SetReady()
         {
@@ -84,6 +84,7 @@ namespace MknGames.FPSWahtever
                 box.MinimumSize = new Size(100, 20);
                 box.Parent = argumentFlowPanel;
             }
+            //dataGridView1.DataSource = null;// table;
             
             //argumentFlowPanel
             //box.Location = 
@@ -402,6 +403,11 @@ expression);
         private void cubes_SubdivideButton_Click(object sender, EventArgs e)
         {
             fps.editBoxesRequestSubdivide = true;
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
         //reload shader
