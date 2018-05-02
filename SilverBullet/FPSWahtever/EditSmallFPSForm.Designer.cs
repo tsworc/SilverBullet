@@ -62,8 +62,9 @@ namespace MknGames.FPSWahtever
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.typeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.data = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
@@ -221,7 +222,7 @@ namespace MknGames.FPSWahtever
             this.listBox2.FormattingEnabled = true;
             this.listBox2.Location = new System.Drawing.Point(400, 44);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(297, 394);
+            this.listBox2.Size = new System.Drawing.Size(297, 251);
             this.listBox2.TabIndex = 8;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             this.listBox2.DoubleClick += new System.EventHandler(this.listBox2_DoubleClick);
@@ -249,12 +250,13 @@ namespace MknGames.FPSWahtever
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.name,
-            this.Column2,
-            this.data});
+            this.typeColumn,
+            this.data,
+            this.value});
             this.dataGridView1.Location = new System.Drawing.Point(4, 302);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(390, 253);
+            this.dataGridView1.Size = new System.Drawing.Size(693, 253);
             this.dataGridView1.TabIndex = 10;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentDoubleClick);
@@ -384,17 +386,23 @@ namespace MknGames.FPSWahtever
             this.name.ReadOnly = true;
             this.name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
-            // Column2
+            // typeColumn
             // 
-            this.Column2.HeaderText = "Column2";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
+            this.typeColumn.HeaderText = "typeColumn";
+            this.typeColumn.Name = "typeColumn";
+            this.typeColumn.ReadOnly = true;
             // 
             // data
             // 
             this.data.HeaderText = "data";
             this.data.Name = "data";
             this.data.ReadOnly = true;
+            // 
+            // value
+            // 
+            this.value.HeaderText = "value";
+            this.value.Name = "value";
+            this.value.ReadOnly = true;
             // 
             // EditSmallFPSForm
             // 
@@ -458,7 +466,8 @@ namespace MknGames.FPSWahtever
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn typeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn data;
+        private System.Windows.Forms.DataGridViewTextBoxColumn value;
     }
 }

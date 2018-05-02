@@ -187,6 +187,16 @@ namespace MknGames.FPSWahtever
                 member.Name);
             SetNode(newNode);
         }
+        public bool GetValueFromMemberInfo(MemberInfo member, out object value)
+        {
+            value = null;
+            MethodInfo getValue = member.GetType().GetMethod("GetValue", new Type[] { typeof(object) });
+            //FieldInfo next = (FieldInfo)(listBox1.SelectedItem);
+            if (getValue == null)
+                return false;
+            value = getValue.Invoke(member, new object[] { currentNode.data });
+            return true;
+        }
         void listBox2_DoubleClick(object sender, EventArgs e)
         {
             if (listBox2.SelectedItem != null)
@@ -223,7 +233,9 @@ namespace MknGames.FPSWahtever
                 if (fieldText.Contains(searchText) == true)
                 {
                     listBox1.Items.Add(a);
-                    dataGridView1.Rows.Add(a.Name, a.MemberType, a);
+                    object value;
+                    GetValueFromMemberInfo(a, out value);
+                    dataGridView1.Rows.Add(a.Name, a.MemberType, a, value);
                     if (a == currentMember)
                     {
                         listBox1.SelectedItem = a;
@@ -412,12 +424,10 @@ expression);
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            //var row = dataGridView1.Rows[e.RowIndex];
-            ////var col = dataGridView1.Columns[e.ColumnIndex];
-            ////DataGridViewRow dataRow = (DataGridViewRow)data;
-            ////var cell = dataRow.Cells[e.ColumnIndex];
-            //Node newNode = new Node(currentNode, row.Cells[2].Value, (string)row.Cells[0].Value);
-            //SetNode(newNode);
+            if (e.RowIndex < 0)
+                return;
+            var row = dataGridView1.Rows[e.RowIndex];
+            SetCurrentMemberInfo((MemberInfo)row.Cells[2].Value);
         }
         private void DataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
