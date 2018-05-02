@@ -409,7 +409,21 @@ expression);
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
+            //var row = dataGridView1.Rows[e.RowIndex];
+            ////var col = dataGridView1.Columns[e.ColumnIndex];
+            ////DataGridViewRow dataRow = (DataGridViewRow)data;
+            ////var cell = dataRow.Cells[e.ColumnIndex];
+            //Node newNode = new Node(currentNode, row.Cells[2].Value, (string)row.Cells[0].Value);
+            //SetNode(newNode);
+        }
+        private void DataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var row = dataGridView1.Rows[e.RowIndex];
+            //var col = dataGridView1.Columns[e.ColumnIndex];
+            //DataGridViewRow dataRow = (DataGridViewRow)data;
+            //var cell = dataRow.Cells[e.ColumnIndex];
+            Node newNode = new Node(currentNode, row.Cells[2].Value, (string)row.Cells[0].Value);
+            SetNode(newNode);
         }
 
         //reload shader
