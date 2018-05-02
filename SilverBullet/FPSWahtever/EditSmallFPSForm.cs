@@ -237,11 +237,10 @@ namespace MknGames.FPSWahtever
                     {
                         methodDataGridView.Rows.Add(a.Name, a, a.MemberType);
                     }
-                    else
+                    object value;
+                    if (GetValueFromMemberInfo(a, out value)) //will omit nested types and events
                     {
-                        object value;
-                        GetValueFromMemberInfo(a, out value);
-                        dataGridView1.Rows.Add(a.Name, a.MemberType, a, value);
+                        dataGridView1.Rows.Add(a.Name, a.MemberType, a, value, value == null ? "null" : value.GetType().Name);
                     }
                     if (a == currentMember)
                     {
