@@ -25,6 +25,8 @@ using Microsoft.Xna.Framework.Audio;
 using NAudio.Wave.SampleProviders;
 using NAudio.Dsp;
 using System.Reflection;
+using SilverBullet.Common;
+using SilverBullet.General;
 
 namespace MknGames.FPSWahtever
 {
@@ -48,531 +50,6 @@ namespace MknGames.FPSWahtever
         //    DEFAULT,
         //    COUNT
         //}
-        public class Box
-        {
-            //public BoxType type = BoxType.REFLECT;
-            //public float mass = 1;
-            //public Vector3 velocity;
-            //public Vector3 force;
-            //public Vector3 originalPosition;
-            //public bool ignoresBullets = false;
-            private Vector3 _size;
-            private Vector3 _position;
-            //public Vector3 position0;
-            public Color color;
-            //public bool embedsBulletOnImpact = false;
-            //public bool isdoor;
-            //public bool isnew = true;
-            //public float restitution = 0;
-            public ulong id = 0;
-            public static ulong instantiationCounter = 0;
-
-            public BoundingBox boundingBox { get; private set; }
-
-            // box properties
-            public Vector3 position
-            {
-                get { return _position; }
-                set
-                {
-                    _position = value;
-                    _UpdateBoundingBox();
-                }
-            }
-            public Vector3 size
-            {
-                get { return _size; }
-                set
-                {
-                    _size = value;
-                    _UpdateBoundingBox();
-                }
-            }
-
-            //box constructor
-            public Box()
-            {
-                id = instantiationCounter++;
-            }
-            public Box(Vector3 size, Vector3 position)
-            {
-                id = instantiationCounter++;
-                this._size = size;
-                this._position = position;
-                //originalPosition = this._position;
-                _UpdateBoundingBox();
-            }
-            public Box(Box copyBox)
-            {
-                id = instantiationCounter++;
-                this._size = copyBox.size;
-                this._position = copyBox.position;
-                //originalPosition = this._position;
-                this.color = copyBox.color;
-                //this.type = copyBox.type;
-                //this.ignoresBullets = copyBox.ignoresBullets;
-                _UpdateBoundingBox();
-            }
-            void _UpdateBoundingBox()
-            {
-                boundingBox = GameMG.MakeBox(position, size);
-            }
-            public override string ToString()
-            {
-                return string.Format("Id: {0} | Pos: {1} | Size: {2}", id, _position, _size);
-            }
-            //public void GetMaterialProperties(out float friction, out float velocityCofactor, out bool positionCorrecting)
-            //{
-            //    positionCorrecting = true;
-            //    switch (type)
-            //    {
-            //        case BoxType.REFLECT:
-            //            velocityCofactor = 1;
-            //            friction = 0;
-            //            break;
-            //        case BoxType.STICK:
-            //            velocityCofactor = 0;
-            //            friction = 1;
-            //            break;
-            //        case BoxType.FLATTEN:
-            //            friction = 1;
-            //            velocityCofactor = 1;
-            //            break;
-            //        case BoxType.SLIDE:
-            //            velocityCofactor = 0;
-            //            friction = 0;
-            //            break;
-            //        case BoxType.SLOW:
-            //            velocityCofactor = -0.95f;
-            //            friction = 0;
-            //            positionCorrecting = false;
-            //            break;
-            //        case BoxType.DEFAULT:
-            //            velocityCofactor = 0;
-            //            friction = 0.03f;
-            //            break;
-            //        default:
-            //            friction = -10;
-            //            velocityCofactor = -10;
-            //            break;
-            //    }
-            //}
-        }
-        public class SmallFPSEditState
-        {
-            public List<Box> boxes = new List<Box>();
-            public Box hoverbox0;
-            public Box hoverbox;
-            public int hoverTarget = -1;
-            public Vector3 hoverboxContact;
-            public bool active;
-            public bool occludeTargets = true;
-            public Vector3 hoverboxNormal;
-            public bool saveNeeded = false;
-            public int target = -1;
-        }
-        public class Bullet
-        {
-            /// <summary>
-            /// physics state
-            /// </summary>
-            public PhysicsState phy;
-            /// <summary>
-            /// is inactive
-            /// </summary>
-            public bool off;
-            public bool affectedByGravity;
-            //public bool inContactOld;
-            //public bool inContact;
-            /// <summary>
-            /// time spent active
-            /// </summary>
-            public float t;
-            public float lifeSpan = 3;
-            public bool skipNextAdvance;
-            public float size = 0.05f;
-            //public Vector3 direction;
-            //public Vector3 incomingPosition;
-            //public Vector3 incomingVelocity;
-            public static ulong instantiationCounter = 0;
-            public ulong id;
-
-            public Bullet()
-            {
-                id = instantiationCounter++;
-                phy = new PhysicsState(1);
-                off = true;
-                t = 0;
-                affectedByGravity = true;
-            }
-
-            public bool isTooFast(float et)
-            {
-                float limit = size;// * 4;
-                float deltasq = (phy.vel * et).LengthSquared();
-                return deltasq >= limit * limit;
-            }
-            public bool isSolid(float et)
-            {
-                return off || !isTooFast(et);
-            }
-            public bool isRay(float et)
-            {
-                return !off && isTooFast(et);
-            }
-
-            public override string ToString()
-            {
-                return string.Format("Off: {0}, Adv: {1}", off, skipNextAdvance);
-            }
-        }
-        public class Gun
-        {
-            public Vector3 pos;
-            public Matrix rot = Matrix.Identity;
-            public Vector3 size = new Vector3(.05f, .08f, 0.55f) * 2;
-            //public Bullet[] bullets;
-            //public Queue<Bullet> bullets;
-            public List<Bullet> bullets;
-            public int bulleti;
-            public float bulletSpeed = 100;
-            float _bulletSize;
-            float _bulletLifespan;
-            public bool bulletAffectedByGravity;
-            public bool off = false;
-            public bool isFullAuto = true;
-            public bool requireTriggerUp;
-            public bool isTriggerDown = false;
-            //gonna need manual fire delay
-            public float automaticFireDelayS = 0.15f;
-            public float fireElapsed;
-            public int bulletsPerShot = 1;
-            int _startingBullets = 6;
-            public float spreadConeAngle = MathHelper.ToRadians(3);
-            public string filename = "";
-            public float deathElapsed;
-            public float deathDuration;
-            public bool canRespawn;
-            public bool fireAutomatically;
-
-            public Gun(float bulletSize = 0.05f, int bulletCount = 12, bool hasGravity = true, float lifeSpan = 3)
-            {
-                bulleti = 0;
-                this._bulletSize = bulletSize;
-                this._startingBullets = bulletCount;
-                bulletAffectedByGravity = hasGravity;
-                _bulletLifespan = lifeSpan;
-                bullets = new List<Bullet>();
-                for (int i = 0; i < _startingBullets; ++i)
-                {
-                    AddBullet();
-                }
-            }
-
-
-            public float BulletSize
-            {
-                get { return _bulletSize; }
-                set
-                {
-                    _bulletSize = value;
-                    for (int i = 0; i < bullets.Count; ++i)
-                    {
-                        bullets[i].size = _bulletSize;
-                    }
-                }
-            }
-
-            public float BulletLifespan
-            {
-                get { return _bulletLifespan; }
-                set
-                {
-                    _bulletLifespan = value;
-                    for (int i = 0; i < bullets.Count; ++i)
-                    {
-                        bullets[i].lifeSpan = _bulletLifespan;
-                    }
-                }
-            }
-
-            //public void ClearBullets(List<Bullet> allbullets)
-            //{
-            //    for (int i = 0; i < bullets.Count; ++i)
-            //    {
-            //        allbullets.Remove(bullets[i]);
-            //    }
-            //}
-
-            // gun init
-            //public void AddBullets(List<Bullet> allbullets)
-            //{
-            //    //bullets = new Bullet[bulletCount];
-            //    //bullets = new List<Bullet>();
-            //    //for (int b = 0; b < bullets.Count; ++b)
-            //    for(int i = 0; i < startingBullets; ++i)
-            //    {
-            //        GunAddBullet(allbullets);
-            //    }
-            //}
-
-            public void Shutdown()
-            {
-                if (!off)
-                {
-                    deathElapsed = 0;
-                    off = true;
-                }
-                else
-                {
-                    Debugger.Break();
-                }
-            }
-
-            //helper gun
-            public Vector3 MakeForward()
-            {
-                return Vector3.Transform(Vector3.Forward, rot);
-            }
-
-            public bool TriggerDown(PhysicsState bodyState)
-            {
-                isTriggerDown = true;
-                if (!requireTriggerUp && !off)
-                {
-                    if (!isFullAuto)
-                    {
-                        requireTriggerUp = true;
-                    }
-                    //TODO: solve the issue of elapsed = elapsed % delay being helpful sometimes and detrimental others
-                    //either fire manually or fire automatically after a delay
-                    if (!isFullAuto || fireElapsed >= automaticFireDelayS)
-                    {
-                        return Shoot(bodyState.vel);
-                    }
-                }
-                return false;
-            }
-            //gun shoot
-            public bool Shoot(Vector3 additionalVelocity = default(Vector3))
-            {
-                int checks = 0;
-                int shots = 0;
-                float spreadAngle = spreadConeAngle / 2;
-                float bulletPatternStepAngle = 0;
-                if (bulletsPerShot > 1)
-                {
-                    bulletPatternStepAngle = MathHelper.TwoPi / (bulletsPerShot - 1);
-                }
-                //while (checks < bullets.Length && shots < bulletsPerShot)
-                while (checks < bullets.Count && shots < bulletsPerShot)
-                {
-                    Bullet b = bullets[bulleti++];
-                    //if (bulleti >= bullets.Length)
-                    if (bulleti >= bullets.Count)
-                    {
-                        bulleti = 0;
-                    }
-                    if (b.off)
-                    {
-                        //Vector2 s = GraphicsDevice.Viewport.Bounds.Size.ToVector2();
-                        //Vector2 c = s / 2;
-                        //    Func<float> rands = () => { return game1.randf(-spread, spread); };
-                        //    Vector2 S = new Vector2(rands(), rands());
-                        //    Ray r = camera.ScreenToRay(c + (s / 2 * S), GraphicsDevice.Viewport);
-                        //b.p.pos = r.Position;
-                        //b.p.vel = r.Direction * (10 + Vector3.Dot(bodyState.vel, r.Direction));
-                        //b.p.pos = camera.Position3D;
-                        //Vector3 d = camera.ScreenToWorld(c, 1, GraphicsDevice.Viewport);
-                        //Vector3 v = d - b.p.pos;
-                        //v.Normalize();
-                        //b.p.vel = forward * (10 + Vector3.Dot(bodyState.vel, forward));
-                        //b.p.vel = v * (10 + Vector3.Dot(bodyState.vel, v));
-                        Vector3 gunf = Vector3.Transform(Vector3.Forward, rot);
-                        b.phy.pos = pos + gunf * (size.Z / 2 + b.size / 2);
-                        Vector3 bulletDir = gunf;
-                        if (bulletsPerShot > 0 && shots > 0)
-                        {
-                            Vector3 spreadDir = new Vector3(
-                                -(float)Math.Sin(spreadAngle),
-                                0,
-                                -(float)Math.Cos(spreadAngle));
-                            float spreadDirRotation = bulletPatternStepAngle * (float)shots;
-                            Vector3 spreadDirT = Vector3.Transform(spreadDir,
-                                Matrix.CreateRotationZ(spreadDirRotation) * rot);
-
-                            bulletDir = spreadDirT;
-                            //bulletDir.Normalize();
-                            //b.phy.pos += spreadDirT * b.size * 5;
-                        }
-                        //b.p.pos = gunpos;
-                        //b.phy.vel = bulletDir * (bulletSpeed + Vector3.Dot(additionalVelocity, gunf));
-                        //b.phy.vel = bulletDir * bulletSpeed + additionalVelocity;
-                        b.phy.vel = bulletDir * bulletSpeed;
-                        b.skipNextAdvance = true;
-                        //b.direction = Vector3.Normalize(b.phy.vel);
-                        //guneuler.X += MathHelper.Pi / 16.0f;
-                        //recoile.X += MathHelper.Pi / 32.0f;
-                        b.off = false;
-                        b.t = 0;
-                        fireElapsed = 0;
-                        shots++;
-                        //return true;
-                    }
-                    checks++;
-                }
-                if (shots > 0)
-                    return true;
-                return false;
-            }
-            public void TriggerUp()
-            {
-                isTriggerDown = false;
-                requireTriggerUp = false;
-            }
-            public bool getEmpty()
-            {
-                //for(int i = 0; i < bullets.Length;++i)
-                for (int i = 0; i < bullets.Count; ++i)
-                {
-                    if (bullets[i].off)
-                        return false;
-                }
-                return true;
-            }
-            //gun update
-            public void Update(float et)
-            {
-                if (canRespawn && off)
-                {
-                    if (deathElapsed > deathDuration)
-                        off = false;
-                    else
-                        deathElapsed += et;
-                }
-                fireElapsed += et;
-                if (fireAutomatically)
-                {
-                    TriggerDown(new PhysicsState(1));
-                    TriggerUp();
-                }
-                Vector3 forward = Vector3.Transform(Vector3.Forward, rot);
-                Vector3 up = Vector3.Transform(Vector3.Up, rot);
-                Vector3 right = Vector3.Cross(forward, up);
-                int offCount = 0;
-                //for (int b = 0; b < bullets.Length; ++b)
-                for (int b = 0; b < bullets.Count; ++b)
-                {
-                    if (bullets[b].off)
-                    {
-                        int z = offCount / bulletsPerShot;
-                        int x = offCount % bulletsPerShot;
-                        //Vector3 offset = gua * (size.Y/2) + gfa * (float)b * 0.1f;
-                        float bSize = bullets[b].size;
-                        float radius = bSize / 2;
-                        Vector3 offset = forward * (this.size.Z / 2 - (float)z * bSize)
-                            + right * (bullets[b].size * x) / 3
-                            - right * (bullets[b].size * (float)bulletsPerShot / 2 - radius) / 3;
-                        //Vector3 offset = gu / 10 + gf * (float)b * 0.1f;
-                        //offset = Vector3.Transform(offset, gunrotlocal);
-                        bullets[b].phy.pos = pos + offset;
-                        bullets[b].phy.vel = Vector3.Zero;
-                        bullets[b].phy.force = Vector3.Zero;
-                        bullets[b].affectedByGravity = bulletAffectedByGravity;
-                        offCount++;
-                    }
-                }
-            }
-            // gun add bullet
-            public Bullet AddBullet()//List<Bullet> allbullets)
-            {
-                Bullet b = new FPSWahtever.SmallFPS.Bullet();
-                b.size = _bulletSize;
-                b.phy.mass = GameMG.getVolumeSphere(_bulletSize / 2) * 1000;
-                b.affectedByGravity = bulletAffectedByGravity;
-                b.lifeSpan = _bulletLifespan;
-                bullets.Add(b);
-                //if (allbullets != null)
-                //    allbullets.Add(b);
-                return b;
-            }
-            public void AddBullet(List<Bullet> bulletRegistrationList)
-            {
-                bulletRegistrationList.Add(AddBullet());
-            }
-
-            //gun to string
-            public override string ToString()
-            {
-                return filename;
-            }
-        }
-        public class Target
-        {
-            //public Vector3 Center
-            //{
-            //    get { return phy.pos; }
-            //    set { phy.pos = value; }
-            //}
-            public Vector3 Center;
-            public float Radius;
-            //public bool isCube;
-            public bool off;
-            //public PhysicsState phy;
-            public Vector3 movementTarget;
-
-            public Target(Vector3 center, float radius)
-            {
-                //phy = new PhysicsState(1);
-                this.Center = center;
-                this.Radius = radius;
-            }
-        }
-        public class ContactData
-        {
-            public Vector3 contact;
-            public Vector3 norm;
-            public float pen;
-            //public float restitution = 0;
-            public override string ToString()
-            {
-                return string.Format("Contact: {2}, Norm: {0}, Pen: {1}",
-                    norm, pen, contact);
-            }
-        }
-        public class StateMachine
-        {
-            public int state;
-            public int previousState;
-            public float stateStartTime;
-            public static float totalGameTime;
-
-            public StateMachine()
-            {
-
-            }
-
-            //WARN: may not work as expected for the state == 0
-            public float getElapsed()
-            {
-                return totalGameTime - stateStartTime;
-            }
-
-            public void ChangeState(int newState)
-            {
-                previousState = state;
-                state = newState;
-                stateStartTime = totalGameTime;
-            }
-            public void Increment()
-            {
-                ChangeState(state + 1);
-            }
-            public void DecrementState()
-            {
-                ChangeState(state - 1);
-            }
-        }
         //public class ZombieState
         //{
         //    public Vector3 pos, vel, force;
@@ -624,15 +101,6 @@ namespace MknGames.FPSWahtever
         //    //public FPSInput input0;
         //    public FPSInput input;
         //}
-        public struct FPSInput
-        {
-            public bool forward;
-            public bool back;
-            public bool left;
-            public bool right;
-            public bool jump;
-            public bool shoot;
-        }
         //public class Unit
         //{
         //    public Vector3 pos;
@@ -658,77 +126,6 @@ namespace MknGames.FPSWahtever
         //int sendPort = 12000; // our sending port
         //int remotePort = 11000; // other players' listen port
         //string pingAddress = "66.31.222.168"; // manual connection address
-
-        public class SignalADSRState
-        {
-            public SignalGeneratorType signalT = SignalGeneratorType.Sin;
-            public float attackP = 0.1f;
-            public float freq = 440;
-            public float freqEnd = 0;
-            public float sweepL = 3.0f;
-            public float gain = 0.5f;
-        }
-
-        public class Textbox
-        {
-            public Action<string> setText;
-            public Func<string> GetText;
-
-            public Textbox(Action<string> setText, Func<string> getText)
-            {
-                this.setText = setText;
-                this.GetText = getText;
-            }
-        }
-        public interface IRef
-        {
-            object GetValue();
-            void SetValue(object v);
-        }
-        /// <summary>
-        /// https://gist.github.com/svermeulen/a6929e6e26f2de2cc697d24f108c5f85
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public class Ref<T> : IRef where T : struct
-        {
-            T _value;
-
-            public Ref(T value)
-            {
-                _value = value;
-            }
-
-            public T Value
-            {
-                get { return _value; }
-                set { _value = value; }
-            }
-
-            public object GetValue()
-            {
-                return Value;
-            }
-
-            public void SetValue(object v)
-            {
-                Value = (T)v;
-            }
-
-            public override string ToString()
-            {
-                return _value.ToString();
-            }
-
-            public static implicit operator T(Ref<T> wrapper)
-            {
-                return wrapper.Value;
-            }
-
-            public static implicit operator Ref<T>(T value)
-            {
-                return new Ref<T>(value);
-            }
-        }
 
         //public class UIElement
         //{
@@ -760,8 +157,9 @@ namespace MknGames.FPSWahtever
 
         int testetseteststest;
         //inst player
-        Vector2 gv; //player aim center
-        Matrix untransformedProjection;
+        Player player = new Player();
+        //Vector2 gv; //player aim center
+        //Matrix untransformedProjection;
         //public float jetfuel = 50;
         //public float jetfuelrechargerate = 5;
         //public float playerFriction = 1;
@@ -803,39 +201,13 @@ namespace MknGames.FPSWahtever
         public float playerFlyBoost = 0;
         public float playerGunForwardOffset = 0;
         bool playerRequestFrictionOverride = false;
-        bool playerLeftHandy = false;
+        //bool playerLeftHandy = false;
         bool playerCanSwapToEmpty = false;
         const int playerHolsterOcto = 0;
         const int playerHolsterAdventurer = 1;
         int playerGunHolsterFormation = playerHolsterOcto;
 
         //inst save
-        public class SaveLoadVariable
-        {
-            public string name;
-            public Func<string> write;
-            public Action<string> read;
-
-            public SaveLoadVariable(string name, Func<string> save, Action<string> load)
-            {
-                this.name = name;
-                this.write = save;
-                this.read = load;
-            }
-        }
-        public class SaveLoadVariable<T>
-        {
-            public string name;
-            public Func<T, string> write;
-            public Action<T, string> read;
-
-            public SaveLoadVariable(string name, Func<T, string> save, Action<T, string> load)
-            {
-                this.name = name;
-                this.write = save;
-                this.read = load;
-            }
-        }
         Dictionary<string, SaveLoadVariable> saveLoadVariables = new Dictionary<string, SaveLoadVariable>();
         Dictionary<string, SaveLoadVariable<Gun>> gunSaveLoadVariables = new Dictionary<string, SaveLoadVariable<Gun>>();
         bool requestForceReloadSettings = false;
@@ -871,30 +243,7 @@ namespace MknGames.FPSWahtever
         Vector3 gravity = Vector3.Zero;
 
         //inst rendering
-        float renderLightAmbientValue = 0f;
-        Vector3 renderLightDir = Vector3.Zero;
-        RenderTarget2D deferredBuffer0;
-        RenderTarget2D deferredBufferDepth;
-        //inst shadows
-        const int shadowMapCount = 0;
-        //RenderTarget3D cascadeShadowMaps;
-        RenderTarget2D[] cascadeShadowMaps = new RenderTarget2D[shadowMapCount];
-        Matrix[] shadowViews = new Matrix[shadowMapCount];
-        Matrix[] shadowProjections = new Matrix[shadowMapCount];
-        Matrix[] shadowViewProjections = new Matrix[shadowMapCount];
-        float[] cascadeShadowDepthBiasWorld = new float[] { 0.1f, 0.2f,0.4f,0.8f };
-        float[] cascadeShadowSoftSampleDist = new float[] { 1, 1, 1, 1 };
-        Vector3 lightOffset;
-        float[] shadowDistances = new float[] { 300, 300, 300, 300 };
-        float[] shadowProjSizes  = new float[] { 15, 30, 100, 300};
-        bool[] shadowCullCounterclockwise = new bool[] { true, true, true, false };
-        float shadowNonLinearCutoff = 1;
-        float[] cascadingNonLinearCutoffs = new float[4] { 1, 3, 27, 59 };
-        Vector2[] nonLinearMinsPlusRanges = new Vector2[4];
-        Matrix[] cascadingNonLinearProjections = new Matrix[4];
-        Matrix[] cascadingNonLinearViews = new Matrix[4];
-        Matrix[] cascadingNonLinearVPs = new Matrix[4];
-        Matrix[] cascadingInverseNonLinearProjections = new Matrix[4];
+        Render3D render3d = new Render3D();
 
         //inst bullets
         List<Bullet> allbullets = new List<Bullet>();
@@ -964,33 +313,8 @@ namespace MknGames.FPSWahtever
         //OffsetSampleProvider signalOffset;
 
         //inst effect, inst fx
-        Effect basicfx;
-        Effect deferfx;
-        Effect processfx;
-        Effect shadowfx;
-        Effect clearfx;
 
         //inst instancing
-        VertexDeclaration instanceDecl = new VertexDeclaration(
-            new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.Position, 0),
-            new VertexElement(sizeof(Single) * 4, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1)
-            //new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0),
-            //new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
-            //new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-            //new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
-            );
-        VertexBuffer instanceVertexBuffer;
-        //Matrix[] instanceTransforms;
-        const int instanceMax = 10000;
-        public struct InstanceData
-        {
-            public Vector4 position;
-            public Vector4 scale;
-        }
-        InstanceData[] instanceTransforms = new InstanceData[instanceMax];
-        int instanceCubeIterator;
-        VertexBuffer instanceCubeVertexBuffer;
-        IndexBuffer instanceCubeIndexBuffer;
         
         //float spread = 0;
         //float cooktime;
@@ -1042,26 +366,6 @@ namespace MknGames.FPSWahtever
         List<Gun> allguns = new List<Gun>();
         List<Gun> customGuns = new List<Gun>();
         FPSAccumulator updatefps = new FPSAccumulator(), drawfps = new FPSAccumulator();
-        class FPSAccumulator
-        {
-            public float spf;
-            public float sum;
-            public float counter;
-            public int iterations = 60;
-            public float fps;
-            public void Update(float et)
-            {
-                sum += et;
-                counter++;
-                if(counter >= iterations)
-                {
-                    spf = sum / counter;
-                    fps = 1 / spf;
-                    counter = 0;
-                    sum = 0;
-                }
-            }
-        }
         public bool paused;
         public bool stepOver;
         //public bool pauseMenuShowing = false;
@@ -1132,13 +436,6 @@ namespace MknGames.FPSWahtever
         //        this.frust = frust;
         //    }
         //}
-        VertexPositionNormalTexture[] quadVertices = new VertexPositionNormalTexture[]
-        {
-            new VertexPositionNormalTexture(new Vector3(-1,1,0), Vector3.Backward, new Vector2(0,0)),
-            new VertexPositionNormalTexture(new Vector3(1,1,0),Vector3.Backward, new Vector2(1,0)),
-            new VertexPositionNormalTexture(new Vector3(1,-1,0),Vector3.Backward, new Vector2(1,1)),
-            new VertexPositionNormalTexture(new Vector3(-1,-1,0),Vector3.Backward, new Vector2(0,1)),
-        };
         //QuadVertex[] quadVertices = new QuadVertex[]
         //{
         //    new QuadVertex(new Vector3(-1,1,0), new Vector2(0,0), 0),
@@ -1147,7 +444,6 @@ namespace MknGames.FPSWahtever
         //    new QuadVertex(new Vector3(-1,-1,0), new Vector2(0,1), 2),
         //};
 
-        int[] quadIndices = new int[] { 0, 1, 2, 0, 2, 3 };
         //Effect doffx, blurfx;
         //RenderTarget2D backbuffrt;
         //RenderTarget2D depthrt;
@@ -1410,12 +706,6 @@ namespace MknGames.FPSWahtever
             //load editor
             editor = new EditSmallFPSForm(this);
 
-            //load instancing
-            instanceVertexBuffer = new VertexBuffer(GraphicsDevice, instanceDecl, instanceMax, BufferUsage.WriteOnly);
-            //instanceTransforms = new Matrix[instanceMax];
-            Model cubeModel = game1.Content.Load<Model>("cube");
-            instanceCubeIndexBuffer = cubeModel.Meshes[0].MeshParts[0].IndexBuffer;
-            instanceCubeVertexBuffer = cubeModel.Meshes[0].MeshParts[0].VertexBuffer;
 
             //load travel
             //americanFlagTx = game1.Content.Load<Texture2D>("1280px-Flag_of_the_United_States.svg");
@@ -1463,39 +753,34 @@ namespace MknGames.FPSWahtever
             cylinder= game1.Content.Load<Model>("flat-normal-cylinder");
             surfaceCylinder = game1.Content.Load<Model>("surface-cylinder");
 
-            //load effects, load fx
-            basicfx = game1.Content.Load<Effect>("Shaders/basic");
-            deferfx = game1.Content.Load<Effect>("Shaders/deferred");
-            processfx = game1.Content.Load<Effect>("Shaders/process");
-            //shadowfx = game1.Content.Load<Effect>("shadow");
-            clearfx = game1.Content.Load<Effect>("Shaders/clear");
 
             //load rendering
-            deferredBuffer0 = new RenderTarget2D(
-                GraphicsDevice,
-                GraphicsDevice.PresentationParameters.BackBufferWidth,
-                GraphicsDevice.PresentationParameters.BackBufferHeight,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.Depth24Stencil8);
-            deferredBufferDepth = new RenderTarget2D(
-                GraphicsDevice,
-                GraphicsDevice.PresentationParameters.BackBufferWidth,
-                GraphicsDevice.PresentationParameters.BackBufferHeight,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.Depth24Stencil8);
-            for (int i = 0; i < shadowMapCount; ++i)
-            {
-                cascadeShadowMaps[i] =
-                    new RenderTarget2D(
-                    GraphicsDevice,
-                    2048,
-                    2048,
-                    false,
-                    SurfaceFormat.Single,
-                    DepthFormat.Depth24Stencil8);
-            }
+            render3d.LoadContent(GraphicsDevice, game1);
+            //deferredBuffer0 = new RenderTarget2D(
+            //    GraphicsDevice,
+            //    GraphicsDevice.PresentationParameters.BackBufferWidth,
+            //    GraphicsDevice.PresentationParameters.BackBufferHeight,
+            //    false,
+            //    SurfaceFormat.Color,
+            //    DepthFormat.Depth24Stencil8);
+            //deferredBufferDepth = new RenderTarget2D(
+            //    GraphicsDevice,
+            //    GraphicsDevice.PresentationParameters.BackBufferWidth,
+            //    GraphicsDevice.PresentationParameters.BackBufferHeight,
+            //    false,
+            //    SurfaceFormat.Color,
+            //    DepthFormat.Depth24Stencil8);
+            //for (int i = 0; i < shadowMapCount; ++i)
+            //{
+            //    cascadeShadowMaps[i] =
+            //        new RenderTarget2D(
+            //        GraphicsDevice,
+            //        2048,
+            //        2048,
+            //        false,
+            //        SurfaceFormat.Single,
+            //        DepthFormat.Depth24Stencil8);
+            //}
             //doffx = game1.Content.Load<Effect>("dof");
             //blurfx = game1.Content.Load<Effect>("blur");
             //backbuffrt = new RenderTarget2D(
@@ -1761,18 +1046,12 @@ namespace MknGames.FPSWahtever
             AddSaveLoadVariable("playerGunForwardOffset",
                 () => { return playerGunForwardOffset.ToString(); },
                 (string text) => { playerGunForwardOffset = float.Parse(text); });
-            AddSaveLoadVariable("renderLightAmbientValue",
-                () => { return renderLightAmbientValue.ToString(); },
-                (string text) => { renderLightAmbientValue = float.Parse(text); });
             AddSaveLoadVariable("playerCam.far",
                 () => { return playerCam.far.ToString(); },
                 (string text) => { playerCam.far = float.Parse(text); });
             AddSaveLoadVariable("playerCam.near",
                 () => { return playerCam.near.ToString(); },
                 (string text) => { playerCam.near = float.Parse(text); });
-            AddSaveLoadVariable("shadowNonLinearCutoff",
-                () => { return shadowNonLinearCutoff.ToString(); },
-                (string text) => { shadowNonLinearCutoff = float.Parse(text); });
             //for (int i = 0; i < cascadingNonLinearCutoffs.Length; ++i)
             //{
             //    AddSaveLoadVariable("cascadingNonLinearCutoffs[" + i + "]",
@@ -1780,75 +1059,22 @@ namespace MknGames.FPSWahtever
             //        (string text) => { cascadingNonLinearCutoffs[i] = float.Parse(text); });
             //}
             AddSaveLoadVariable("gv",
-                () => { return csvWriteV2(gv); },
-                (string text) => { gv = csvParseV2(text); });
+                () => { return csvWriteV2(player.gv); },
+                (string text) => { player.gv = csvParseV2(text); });
             AddSaveLoadVariable("gravity",
                 () => { return csvWriteV3(gravity); },
                 (string text) => { gravity = csvParseV3(text); });
-            AddSaveLoadVariable("renderLightDir",
-                () => { return csvWriteV3(renderLightDir); },
-                (string text) => { renderLightDir = csvParseV3(text); });
             AddSaveLoadVariable("game1.clearColor",
                 () => { return csvWriteV3(game1.clearColor.ToVector3()); },
                 (string text) => { game1.clearColor = new Color(csvParseV3(text)); });
-            AddSaveLoadVariable("lightOffset",
-                () => { return csvWriteV3(lightOffset); },
-                (string text) => { lightOffset = csvParseV3(text); });
             AddSaveLoadVariable("myGunLimit",
                 () => { return myGunLimit.ToString(); },
                 (string text) => { myGunLimit = int.Parse(text); });
             AddSaveLoadVariable("playerGunHolsterFormation",
                 () => { return playerGunHolsterFormation.ToString(); },
                 (string text) => { playerGunHolsterFormation = int.Parse(text); });
-            AddSaveLoadVariable("shadowDistances",
-                () => {
-                    return writeObjectArray(shadowDistances);
-                },
-                (string text) => {
-                    shadowDistances = readArrayFloat(text);
-                });
-            AddSaveLoadVariable("cascadingNonLinearCutoffs",
-                () => { return writeObjectArray(cascadingNonLinearCutoffs); },
-                (string line) =>
-                {
-                    cascadingNonLinearCutoffs = readArrayFloat(line);
-                });
-            AddSaveLoadVariable("shadowProjSizes",
-                () => {
-                    return writeObjectArray(shadowProjSizes);
-                },
-                (string text) => {
-                    shadowProjSizes = readArrayFloat(text);
-                });
-            AddSaveLoadVariable("shadowDistances",
-                () => {
-                    return writeObjectArray(shadowDistances);
-                },
-                (string text) => {
-                    shadowDistances = readArrayFloat(text);
-                });
-            AddSaveLoadVariable("cascadeShadowDepthBiasWorld",
-                () => {
-                    return writeObjectArray(cascadeShadowDepthBiasWorld);
-                },
-                (string text) => {
-                    cascadeShadowDepthBiasWorld = readArrayFloat(text);
-                });
-            AddSaveLoadVariable("cascadeShadowSoftSampleDist",
-                () => {
-                    return writeObjectArray(cascadeShadowSoftSampleDist);
-                },
-                (string text) => {
-                    cascadeShadowSoftSampleDist = readArrayFloat(text);
-                });
-            AddSaveLoadVariable("shadowCullCounterclockwise",
-                () => {
-                    return writeObjectArray(shadowCullCounterclockwise);
-                },
-                (string text) => {
-                    shadowCullCounterclockwise = readArrayBool(text);
-                });
 
+            render3d.AddVariables(saveLoadVariables);
             //guns
 
             //public float deathDuration;
@@ -3214,6 +2440,7 @@ namespace MknGames.FPSWahtever
             Vector3 camRight = Vector3.Transform(Vector3.Right, playerCam.rotation3D);
             Vector3 camForwardFlat = camForward; camForwardFlat.Y = 0;
             camForwardFlat.Normalize();
+
             localInput0 = localInput;
             localInput = new FPSInput();
             if (game1.kdown(Microsoft.Xna.Framework.Input.Keys.W))
@@ -5900,15 +5127,15 @@ namespace MknGames.FPSWahtever
                 }
             }
             playerCam.Update(gameTime, GraphicsDevice.Viewport);
-            untransformedProjection = playerCam.GetProjection(playerCam.fov_max, GraphicsDevice.Viewport.AspectRatio);
-            Vector2 gvMutable = gv;
-            if (playerLeftHandy)
+            player.untransformedProjection = playerCam.GetProjection(playerCam.fov_max, GraphicsDevice.Viewport.AspectRatio);
+            Vector2 gvMutable = player.gv;
+            if (player.playerLeftHandy)
                 gvMutable = Vector2.One - gvMutable;
             Vector3 preTransformFar = CameraState.ScreenToWorld(
                 gvMutable * ViewBounds.Size.ToVector2(),
                 1,
                 GraphicsDevice.Viewport,
-                playerCam.view * untransformedProjection);
+                playerCam.view * player.untransformedProjection);
             if (!gameMouseLocked && aimDownSight)
             {
 
@@ -8180,332 +7407,22 @@ namespace MknGames.FPSWahtever
             //clearList.Add(deferredBuffer0, deferredBufferDepth);
             //clearList.AddRange(cascadeShadowMaps);
             //GraphicsDevice.SetRenderTargets(deferredBuffer0, deferredBufferDepth, cascadeShadowMaps);
-            clearfx.CurrentTechnique.Passes[0].Apply();
-            DrawScreenQuad();
+            render3d.Clear();
 
 
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             //r:nx g:ny b:nz a:depth
             //setup draw shadows
-            Vector3 lightDir = Vector3.Normalize(renderLightDir);
-            for (int i = 0; i < shadowMapCount; ++i)
-            {
-                Vector3 offset = lightOffset;
-                if (i < shadowMapCount - 1)
-                {
-                    if (edit.active && editOutOfBody)
-                        offset = bodyState.pos;
-                    else
-                        offset = playerCam.pos;
-                }
-                shadowViews[i] = Matrix.CreateLookAt(offset - lightDir * shadowDistances[i] / 2, offset + lightDir * shadowDistances[i] / 2, Math.Abs(Vector3.Dot(lightDir, Vector3.Up)) > 0.9f ? Vector3.Right : Vector3.Up);
-                //Matrix shadowView = Matrix.CreateLookAt(bodyState.pos - lightDir * shadowDistance / 2, bodyState.pos, Vector3.Up);
-                //Matrix shadowProjection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(65), 1, 1, shadowDistance);
-                float step =(float) (i + 1) / (float)shadowMapCount;
-                shadowProjections[i] = Matrix.CreateOrthographic(shadowProjSizes[i], shadowProjSizes[i], 1, shadowDistances[i]);
-                shadowViewProjections[i] = shadowViews[i] * shadowProjections[i];
-            }
-            // draw calculate nonlinearcutoffs
-            for (int i = 0; i < cascadingNonLinearCutoffs.Length; ++i)
-            {
-                float near = playerCam.near;
-                if (i > 0)
-                {
-                    near = cascadingNonLinearCutoffs[i - 1];
-                }
-                float far = Math.Max(cascadingNonLinearCutoffs[i], near + 0.001f);
-                nonLinearMinsPlusRanges[i] = new Vector2(near, far - near);
-                cascadingNonLinearProjections[i] = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(playerCam.fov),
-                    GraphicsDevice.Viewport.AspectRatio, near, far);
-                cascadingInverseNonLinearProjections[i] = Matrix.Invert(cascadingNonLinearProjections[i]);
-                cascadingNonLinearVPs[i] = playerCam.view * cascadingNonLinearProjections[i];
-            }
+            Vector3 offset = Vector3.Zero;
+            if (edit.active && editOutOfBody)
+                offset = bodyState.pos;
+            else
+                offset = playerCam.pos;
+            render3d.PreRenderShadowSetup(offset, playerCam.view, playerCam.near, playerCam.fov);
 
-            const int finalPass = shadowMapCount;
-            for (int i = 0; i < shadowMapCount+1; ++i)
-            {
-                int shadow = -1;
-                int pass = -1;
-                if(i > 0)
-                {
-                    GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.TransparentBlack, 1, 0);
-                }
-                if (i == finalPass)
-                {
-                    pass = 0; //color
-                    GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-                    GraphicsDevice.SetRenderTargets(deferredBuffer0, deferredBufferDepth);
-                }
-                else
-                {
-                    pass = 1;//shadow
-                    shadow = i;
-                    GraphicsDevice.SetRenderTarget(cascadeShadowMaps[shadow]);
-                    if(shadowCullCounterclockwise[shadow])
-                        GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-                    else
-                        GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-                    SetDeferredParametersShadows(shadow);
-                }
-                //draw boxes
-                instanceCubeIterator = 0;
-                foreach (Box b in allBoxes)
-                {
-                    instanceTransforms[instanceCubeIterator].position = new Vector4(b.position, 0);
-                    instanceTransforms[instanceCubeIterator++].scale = new Vector4(b.size / 2, 1);
-                }
-
-                //Matrix shadowView = playerCam.view;// Matrix.CreateLookAt(bodyState.pos - lightDir * distance / 2, bodyState.pos, Vector3.Up);
-                //Matrix shadowProjection = playerCam.projection;// Matrix.CreateOrthographic(100, 100, 1 / distance, distance);
-
-                SetDeferredParametersGeometry(Matrix.Identity, Matrix.Identity);
-                deferfx.CurrentTechnique = deferfx.Techniques["Instanced"];
-
-                instanceVertexBuffer.SetData(instanceTransforms, 0, instanceCubeIterator);
-                GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(instanceCubeVertexBuffer, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
-                GraphicsDevice.Indices = instanceCubeIndexBuffer;
-
-                deferfx.CurrentTechnique.Passes[pass].Apply();
-                    //        GraphicsDevice.RasterizerState = game1.wireFrameRs;
-                    GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 16, instanceCubeIterator);
-
-                //GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-
-                //draw guns
-                foreach (Gun g in allguns)
-                {
-                    drawgun(g, 1, false, Color.TransparentBlack, pass);
-                }
-
-                // draw player
-                for (int j = 0; j < bodyc; ++j)
-                {
-                    //break;
-                    if (!is3rdPerson && j == 0) continue;
-                    //game1.DrawModel(
-                    //    game1.sphereModel,
-                    //    Matrix.CreateScale(dropValue / 2) *
-                    //    Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (dropValue * (float)bodyc / 2 - dropValue / 2) + drop * j),
-                    //    playerCam.view,
-                    //    playerCam.projection,
-                    //    monochrome(0.5f),
-                    //    true,
-                    //    null);
-                    DrawModel(
-                        game1.sphereModel,
-                        Matrix.CreateScale(dropValue / 2) *
-                        Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (dropValue * (float)bodyc / 2 - dropValue / 2) + drop * j),
-                        Matrix.Identity,
-                        pass);
-                }
-
-                //draw bullets
-                instanceCubeIterator = 0;
-                foreach (Bullet b in allbullets)
-                {
-                    if (true)//b.phy.vel.LengthSquared() == 0)
-                    {
-                        instanceTransforms[instanceCubeIterator].position = new Vector4(b.phy.pos, 0);
-                        instanceTransforms[instanceCubeIterator++].scale = new Vector4(new Vector3(b.size / 2), 1);
-                        continue;
-                    }
-                    Vector3 vel = b.phy.vel;
-                    Vector3 pvel = vel / updatefps.fps;
-                    Vector3 A = b.phy.pos;
-                    Vector3 B = A + pvel;
-                    //volume of sphere = (4/3) * pi * r^3
-                    float volume =
-                        (4.0f / 3.0f) *
-                        MathHelper.Pi *
-                        (float)Math.Pow(b.size / 2, 3);
-                    //float s = bul.size;
-                    float l = (B - A).Length();
-                    float s = 0;
-                    //float amt = 10;
-                    //float currentRadius = b.size / 2;
-                    //float capsuleVolume = 0;
-                    //int iterations = 0;
-                    //float dif;
-                    //do
-                    //{
-                        ////get volume of capsule currently
-                        //float factorA = MathHelper.Pi * (currentRadius * currentRadius);
-                        //float factorB = (4f / 3f) * currentRadius + l;
-                        //capsuleVolume = factorA * factorB;
-                        ////check if its within a threshhold of the real volume
-                        //float vdelta = volume - capsuleVolume;
-                        //dif = Math.Abs(vdelta);
-                        ////shrink or grow radius by amount
-                        //currentRadius += 0.01f * vdelta;
-                        ////decrease amount
-                        ////amt *= 0.5f;
-                        ////if amount is very low than give up
-                        //iterations++;
-                    //} while (dif > 0.01f || iterations < 30);
-                    //s = currentRadius * 2;
-                    {
-                        //volume of cube = w * h * d
-                        //volume / d = w * h
-                        //h = w
-                        //volume / d = w ^ 2
-                        //w = sqrt(volume / d)
-                        s = (float)Math.Sqrt(volume / l);
-                    }
-                    if (b.skipNextAdvance)
-                        l = 0.01f;
-                    Vector3 up = Vector3.Up;
-                    float pv = pvel.Length();
-                    Vector3 dir = pvel / pv;
-                    if (Vector3.Dot(dir, up) > 0.98f)
-                        up = Vector3.Right;
-                    Vector3 start = A;
-                    Vector3 end = B;
-                    Matrix look = Matrix.CreateLookAt(start, end, up);
-                    float length = l;
-                    Matrix orientation = Matrix.Invert(look);
-                    Matrix world =
-                        Matrix.CreateTranslation(0, 0, -1) *
-                        Matrix.CreateScale(s / 2, s / 2, length / 2) *
-                        orientation;
-                    DrawModel(game1.cubeModel, world, orientation, pass);
-
-                    //Vector3 scale = new Vector3(s / 2);// - 0.1f);
-                    //instanceTransforms[instanceCubeIterator].position = new Vector4(start, 0);
-                    //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
-                    //instanceTransforms[instanceCubeIterator].position = new Vector4(end, 0);
-                    //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
-                }
-
-                SetDeferredParametersGeometry(Matrix.Identity, Matrix.Identity);
-                deferfx.CurrentTechnique = deferfx.Techniques["Instanced"];
-                ModelMeshPart sphMeshPart = surfaceSphere.Meshes[0].MeshParts[0];
-                //ModelMeshPart sphMeshPart = game1.sphereModel.Meshes[0].MeshParts[0];
-                instanceVertexBuffer.SetData(instanceTransforms, 0, instanceCubeIterator);
-                GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(sphMeshPart.VertexBuffer, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
-                GraphicsDevice.Indices = sphMeshPart.IndexBuffer;
-                deferfx.CurrentTechnique.Passes[pass].Apply();
-                    GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, sphMeshPart.PrimitiveCount, instanceCubeIterator);
-
-                if(i == finalPass)
-                {
-                    game1.DrawAll3dLines(playerCam.view, playerCam.projection);
-                    game1.Flush3dLines();
-
-                    //draw targets
-                    foreach (Target t in targets)
-                    {
-                        game1.DrawModel(game1.sphereModel,
-                            Matrix.CreateScale(t.Radius) *
-                            Matrix.CreateTranslation(t.Center),
-                            playerCam.view, playerCam.projection,
-                            monochrome(0.9f),
-                            true);
-                    }
-
-                    //draw selected boxes
-                    if (edit.active)
-                    {
-                        foreach (Box b in edit.boxes)
-                        {
-                            game1.DrawModel(game1.cubeModel,
-                                Matrix.CreateScale(b.size / 2) * Matrix.CreateScale(1.001f) *
-                                Matrix.CreateTranslation(b.position),
-                                playerCam.view,
-                                playerCam.projection,
-                                Color.Red,
-                                true);
-                        }
-                        if (editGun != null)
-                        {
-                            drawgun(editGun, 1.01f, true, Color.Red, 0);
-                        }
-                    }
-                    // draw wireframe
-                    GraphicsDevice.RasterizerState = game1.wireFrameRs;
-
-                    for (int j = 0; j < shadowMapCount; ++j)
-                    {
-                        break;
-                        var corners = new BoundingFrustum(shadowViews[j] * shadowProjections[j]).GetCorners();
-                        for (int k = 0; k < 4; ++k)
-                        {
-                            game1.add3DLine(corners[k], corners[(k + 1) % 4], Color.White);
-                            game1.add3DLine(corners[k + 4], corners[(k + 1) % 4 + 4], Color.Yellow);
-                            game1.add3DLine(corners[k], corners[k + 4], Color.White, Color.Yellow);
-                        }
-                    }
-
-                    //draw hover box
-                    if (edit.active)
-                    {
-                        if (edit.hoverbox != null)
-                        {
-                            game1.DrawModel(
-                                game1.cubeModel,
-                                Matrix.CreateScale(edit.hoverbox.size / 2) *
-                                Matrix.CreateScale(1.002f) *
-                                Matrix.CreateTranslation(edit.hoverbox.position),
-                                playerCam.view,
-                                playerCam.projection,
-                                Color.Blue,
-                                false);
-                        }
-                        if (editHoverGun != null)
-                        {
-                            drawgun(editHoverGun, 1.02f, true, Color.Yellow, 0);
-                        }
-                    }
-
-                    for(int j = 0; j < shadowMapCount; ++j)
-                        game1.DrawModel(game1.sphereModel, Matrix.Invert(shadowViews[j]), playerCam.view, playerCam.projection, Color.Blue, false);
-
-                    GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-                }//end if i == 1
-            }
-
+            render3d.Render(DrawCore, playerCam);
             //draw process
-                GraphicsDevice.SetRenderTargets(null);
-                GraphicsDevice.DepthStencilState = DepthStencilState.None;
-                processfx.Parameters["diffusetx"].SetValue(deferredBuffer0);
-                processfx.Parameters["tempNegLightDir"].SetValue(-lightDir);
-                processfx.Parameters["tempAmbient"].SetValue(renderLightAmbientValue);
-
-                processfx.Parameters["svp"].SetValue(shadowViewProjections);
-                processfx.Parameters["sv"].SetValue(shadowViews);
-                processfx.Parameters["sp"].SetValue(shadowProjections);
-                processfx.Parameters["sfar"].SetValue(shadowDistances);
-                processfx.Parameters["inverseView"].SetValue(Matrix.Invert(playerCam.view));
-                processfx.Parameters["inverseProjection"].SetValue(Matrix.Invert(playerCam.projection));
-                processfx.Parameters["inverseViewRotation"].SetValue(Matrix.Invert(Matrix.Invert(playerCam.rotation3D)));
-                processfx.Parameters["inverseNonLinearMatrices"].SetValue(cascadingInverseNonLinearProjections);
-                processfx.Parameters["nonLinearMatrices"].SetValue(cascadingNonLinearVPs);
-                processfx.Parameters["nonLinearCutoffs"].SetValue(cascadingNonLinearCutoffs);
-            processfx.Parameters["far"].SetValue(playerCam.far);
-            Vector3[] farFrustumCorners = GetFarFrustumCorners(playerCam.view, playerCam.projection);
-                Vector3[][] farFrustomCornersPlus = new Vector3[4][];
-                for (int i = 0; i < 4; ++i)
-                {
-                    farFrustomCornersPlus[i] = new Vector3[4];
-                    farFrustomCornersPlus[i] = GetFarFrustumCorners(cascadingNonLinearViews[i], cascadingNonLinearProjections[i]);
-                processfx.Parameters["farFrustumCornersPlus" + i].SetValue(farFrustomCornersPlus[i]);
-            }
-                processfx.Parameters["farFrustumCorners"].SetValue(farFrustumCorners);
-                processfx.Parameters["camPos"].SetValue(playerCam.pos);
-                processfx.Parameters["linearMinsPlusRanges"].SetValue(nonLinearMinsPlusRanges);
-                processfx.Parameters["nonlineartx"].SetValue(deferredBufferDepth);
-                processfx.Parameters["diffuseWidth"].SetValue((float)deferredBuffer0.Width);
-                processfx.Parameters["diffuseHeight"].SetValue((float)deferredBuffer0.Height);
-                processfx.Parameters["shadowDepthBias"].SetValue(cascadeShadowDepthBiasWorld);
-                processfx.Parameters["nonLinearCutoff"].SetValue(shadowNonLinearCutoff);
-            processfx.Parameters["softSampleDists"].SetValue(cascadeShadowSoftSampleDist);
-                processfx.CurrentTechnique.Passes[0].Apply();
-            for (int i = 0; i < shadowMapCount ; ++i) //this must go after apply
-            {
-                GraphicsDevice.Textures[i] = cascadeShadowMaps[i];
-                //processfx.Parameters["shadowtx"].SetValue(cascadeShadowMaps[i]);
-            }
-            DrawScreenQuad();
 
             ////draw 2d
             Rectangle debugWindow = Backpack.percentage(ViewBounds, 0, 0, 0.1f, 0.1f);
@@ -8517,7 +7434,7 @@ namespace MknGames.FPSWahtever
             
             if (game1.kdown(Keys.OemComma))
             {
-                spriteBatch.Draw(deferredBuffer0, ViewBounds, Color.White);
+                spriteBatch.Draw(render3d.deferredBuffer0, ViewBounds, Color.White);
             }
             for (int i = 0; i < debugText.Length; ++i)
             {
@@ -8531,11 +7448,11 @@ namespace MknGames.FPSWahtever
                 Rectangle preview2Rect = Backpack.percentage(ViewBounds, .8f, 0.8f, 0.2f, 0.2f);
                 if (game1.kdown(Keys.OemPeriod))
                     preview2Rect = ViewBounds;
-                spriteBatch.Draw(deferredBufferDepth, preview2Rect, Color.White);
-                for (int i = 0; i < shadowMapCount; ++i)
+                spriteBatch.Draw(render3d.deferredBufferDepth, preview2Rect, Color.White);
+                for (int i = 0; i < Render3D.shadowMapCount; ++i)
                 {
                     Rectangle previewRect = Backpack.percentage(ViewBounds, 0, 0.2f + 0.2f * (float)i, 0.2f, 0.2f);
-                    spriteBatch.Draw(cascadeShadowMaps[i], previewRect, Color.White);
+                    spriteBatch.Draw(render3d.cascadeShadowMaps[i], previewRect, Color.White);
                 }
             }
             //if (frustum.Contains(Vector3.Zero) == ContainmentType.Contains)
@@ -8545,39 +7462,223 @@ namespace MknGames.FPSWahtever
             spriteBatch.End();
         }//end draw
 
-        private Vector3[] GetFarFrustumCorners(Matrix view, Matrix projection)
+        void DrawCore(int i, int pass)
         {
-            BoundingFrustum frustum = new BoundingFrustum(playerCam.view * playerCam.projection);
-            var cornersWS = frustum.GetCorners();
-            Vector3[] cornersVS = new Vector3[cornersWS.Length];
-            Vector3.Transform(cornersWS, ref playerCam.view, cornersVS);
-            Vector3[] farFrustumCorners = new Vector3[4];
-            for (int i = 0; i < 4; ++i)
+            const int finalPass = Render3D.shadowMapCount;
+            //draw boxes
+            render3d.instanceCubeIterator = 0;
+            foreach (Box b in allBoxes)
             {
-                //farFrustumCorners[i] = Vector3.Transform(cornersVS[i + 4], Matrix.Invert(playerCam.view));
-                farFrustumCorners[i] = cornersVS[i + 4];
+                render3d.instanceTransforms[render3d.instanceCubeIterator].position = new Vector4(b.position, 0);
+                render3d.instanceTransforms[render3d.instanceCubeIterator++].scale = new Vector4(b.size / 2, 1);
             }
-            return farFrustumCorners;
-        }
 
-        private void SetDeferredParametersGeometry(Matrix world, Matrix orientation)
-        {
-            deferfx.Parameters["far"].SetValue(playerCam.far);
-            deferfx.Parameters["orientation"].SetValue(orientation);
-            deferfx.Parameters["world"].SetValue(world);
-            deferfx.Parameters["view"].SetValue(playerCam.view);
-            deferfx.Parameters["projection"].SetValue(playerCam.projection);
-            deferfx.Parameters["nonLinearMatrices"].SetValue(cascadingNonLinearProjections);
-            deferfx.Parameters["viewRotation"].SetValue(playerCam.rotation3D);
-            deferfx.Parameters["linearMinsPlusRanges"].SetValue(nonLinearMinsPlusRanges);
-        }
+            //Matrix shadowView = playerCam.view;// Matrix.CreateLookAt(bodyState.pos - lightDir * distance / 2, bodyState.pos, Vector3.Up);
+            //Matrix shadowProjection = playerCam.projection;// Matrix.CreateOrthographic(100, 100, 1 / distance, distance);
 
-        private void SetDeferredParametersShadows(int cascade)
-        {
-            deferfx.Parameters["sw"].SetValue(Matrix.Identity);
-            deferfx.Parameters["sv"].SetValue(shadowViews[cascade]);
-            deferfx.Parameters["sp"].SetValue(shadowProjections[cascade]);
-            deferfx.Parameters["shadowFar"].SetValue(shadowDistances[cascade]);
+            render3d.SetDeferredParametersGeometry(playerCam, Matrix.Identity, Matrix.Identity);
+            render3d.deferfx.CurrentTechnique = render3d.deferfx.Techniques["Instanced"];
+
+            render3d.instanceVertexBuffer.SetData(render3d.instanceTransforms, 0, render3d.instanceCubeIterator);
+            GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(render3d.instanceCubeVertexBuffer, 0), new VertexBufferBinding(render3d.instanceVertexBuffer, 0, 1));
+            GraphicsDevice.Indices = render3d.instanceCubeIndexBuffer;
+
+            render3d.deferfx.CurrentTechnique.Passes[pass].Apply();
+            //        GraphicsDevice.RasterizerState = game1.wireFrameRs;
+            GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 16, render3d.instanceCubeIterator);
+
+            //GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+
+            //draw guns
+            foreach (Gun g in allguns)
+            {
+                drawgun(g, 1, false, Color.TransparentBlack, pass);
+            }
+
+            // draw player
+            for (int j = 0; j < bodyc; ++j)
+            {
+                //break;
+                if (!is3rdPerson && j == 0) continue;
+                //game1.DrawModel(
+                //    game1.sphereModel,
+                //    Matrix.CreateScale(dropValue / 2) *
+                //    Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (dropValue * (float)bodyc / 2 - dropValue / 2) + drop * j),
+                //    playerCam.view,
+                //    playerCam.projection,
+                //    monochrome(0.5f),
+                //    true,
+                //    null);
+                DrawModel(
+                    game1.sphereModel,
+                    Matrix.CreateScale(dropValue / 2) *
+                    Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (dropValue * (float)bodyc / 2 - dropValue / 2) + drop * j),
+                    Matrix.Identity,
+                    pass);
+            }
+
+            //draw bullets
+            render3d.instanceCubeIterator = 0;
+            foreach (Bullet b in allbullets)
+            {
+                if (true)//b.phy.vel.LengthSquared() == 0)
+                {
+                    render3d.instanceTransforms[render3d.instanceCubeIterator].position = new Vector4(b.phy.pos, 0);
+                    render3d.instanceTransforms[render3d.instanceCubeIterator++].scale = new Vector4(new Vector3(b.size / 2), 1);
+                    continue;
+                }
+                Vector3 vel = b.phy.vel;
+                Vector3 pvel = vel / updatefps.fps;
+                Vector3 A = b.phy.pos;
+                Vector3 B = A + pvel;
+                //volume of sphere = (4/3) * pi * r^3
+                float volume =
+                    (4.0f / 3.0f) *
+                    MathHelper.Pi *
+                    (float)Math.Pow(b.size / 2, 3);
+                //float s = bul.size;
+                float l = (B - A).Length();
+                float s = 0;
+                //float amt = 10;
+                //float currentRadius = b.size / 2;
+                //float capsuleVolume = 0;
+                //int iterations = 0;
+                //float dif;
+                //do
+                //{
+                ////get volume of capsule currently
+                //float factorA = MathHelper.Pi * (currentRadius * currentRadius);
+                //float factorB = (4f / 3f) * currentRadius + l;
+                //capsuleVolume = factorA * factorB;
+                ////check if its within a threshhold of the real volume
+                //float vdelta = volume - capsuleVolume;
+                //dif = Math.Abs(vdelta);
+                ////shrink or grow radius by amount
+                //currentRadius += 0.01f * vdelta;
+                ////decrease amount
+                ////amt *= 0.5f;
+                ////if amount is very low than give up
+                //iterations++;
+                //} while (dif > 0.01f || iterations < 30);
+                //s = currentRadius * 2;
+                {
+                    //volume of cube = w * h * d
+                    //volume / d = w * h
+                    //h = w
+                    //volume / d = w ^ 2
+                    //w = sqrt(volume / d)
+                    s = (float)Math.Sqrt(volume / l);
+                }
+                if (b.skipNextAdvance)
+                    l = 0.01f;
+                Vector3 up = Vector3.Up;
+                float pv = pvel.Length();
+                Vector3 dir = pvel / pv;
+                if (Vector3.Dot(dir, up) > 0.98f)
+                    up = Vector3.Right;
+                Vector3 start = A;
+                Vector3 end = B;
+                Matrix look = Matrix.CreateLookAt(start, end, up);
+                float length = l;
+                Matrix orientation = Matrix.Invert(look);
+                Matrix world =
+                    Matrix.CreateTranslation(0, 0, -1) *
+                    Matrix.CreateScale(s / 2, s / 2, length / 2) *
+                    orientation;
+                DrawModel(game1.cubeModel, world, orientation, pass);
+
+                //Vector3 scale = new Vector3(s / 2);// - 0.1f);
+                //instanceTransforms[instanceCubeIterator].position = new Vector4(start, 0);
+                //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
+                //instanceTransforms[instanceCubeIterator].position = new Vector4(end, 0);
+                //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
+            }
+
+            render3d.SetDeferredParametersGeometry(playerCam, Matrix.Identity, Matrix.Identity);
+            render3d.deferfx.CurrentTechnique = render3d.deferfx.Techniques["Instanced"];
+            ModelMeshPart sphMeshPart = surfaceSphere.Meshes[0].MeshParts[0];
+            //ModelMeshPart sphMeshPart = game1.sphereModel.Meshes[0].MeshParts[0];
+            render3d.instanceVertexBuffer.SetData(render3d.instanceTransforms, 0, render3d.instanceCubeIterator);
+            GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(sphMeshPart.VertexBuffer, 0), new VertexBufferBinding(render3d.instanceVertexBuffer, 0, 1));
+            GraphicsDevice.Indices = sphMeshPart.IndexBuffer;
+            render3d.deferfx.CurrentTechnique.Passes[pass].Apply();
+            GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, sphMeshPart.PrimitiveCount, render3d.instanceCubeIterator);
+
+            if (i == finalPass)
+            {
+                game1.DrawAll3dLines(playerCam.view, playerCam.projection);
+                game1.Flush3dLines();
+
+                //draw targets
+                foreach (Target t in targets)
+                {
+                    game1.DrawModel(game1.sphereModel,
+                        Matrix.CreateScale(t.Radius) *
+                        Matrix.CreateTranslation(t.Center),
+                        playerCam.view, playerCam.projection,
+                        monochrome(0.9f),
+                        true);
+                }
+
+                //draw selected boxes
+                if (edit.active)
+                {
+                    foreach (Box b in edit.boxes)
+                    {
+                        game1.DrawModel(game1.cubeModel,
+                            Matrix.CreateScale(b.size / 2) * Matrix.CreateScale(1.001f) *
+                            Matrix.CreateTranslation(b.position),
+                            playerCam.view,
+                            playerCam.projection,
+                            Color.Red,
+                            true);
+                    }
+                    if (editGun != null)
+                    {
+                        drawgun(editGun, 1.01f, true, Color.Red, 0);
+                    }
+                }
+                // draw wireframe
+                GraphicsDevice.RasterizerState = game1.wireFrameRs;
+
+                for (int j = 0; j < Render3D.shadowMapCount; ++j)
+                {
+                    break;
+                    var corners = new BoundingFrustum(render3d.shadowViews[j] * render3d.shadowProjections[j]).GetCorners();
+                    for (int k = 0; k < 4; ++k)
+                    {
+                        game1.add3DLine(corners[k], corners[(k + 1) % 4], Color.White);
+                        game1.add3DLine(corners[k + 4], corners[(k + 1) % 4 + 4], Color.Yellow);
+                        game1.add3DLine(corners[k], corners[k + 4], Color.White, Color.Yellow);
+                    }
+                }
+
+                //draw hover box
+                if (edit.active)
+                {
+                    if (edit.hoverbox != null)
+                    {
+                        game1.DrawModel(
+                            game1.cubeModel,
+                            Matrix.CreateScale(edit.hoverbox.size / 2) *
+                            Matrix.CreateScale(1.002f) *
+                            Matrix.CreateTranslation(edit.hoverbox.position),
+                            playerCam.view,
+                            playerCam.projection,
+                            Color.Blue,
+                            false);
+                    }
+                    if (editHoverGun != null)
+                    {
+                        drawgun(editHoverGun, 1.02f, true, Color.Yellow, 0);
+                    }
+                }
+
+                for (int j = 0; j < Render3D.shadowMapCount; ++j)
+                    game1.DrawModel(game1.sphereModel, Matrix.Invert(render3d.shadowViews[j]), playerCam.view, playerCam.projection, Color.Blue, false);
+
+                GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            }//end if i == 1
         }
 
         //draw boxes
@@ -10009,9 +9110,9 @@ namespace MknGames.FPSWahtever
         //helper draw
         void DrawModel(Model m, Matrix w, Matrix orientation, int pass)
         {
-            SetDeferredParametersGeometry(w, orientation);
-            deferfx.CurrentTechnique = deferfx.Techniques["Default"];
-            deferfx.CurrentTechnique.Passes[pass].Apply();
+            render3d.SetDeferredParametersGeometry(playerCam, w, orientation);
+            render3d.deferfx.CurrentTechnique = render3d.deferfx.Techniques["Default"];
+            render3d.deferfx.CurrentTechnique.Passes[pass].Apply();
             ModelMeshPart meshPart = m.Meshes[0].MeshParts[0];
             GraphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
             GraphicsDevice.Indices = meshPart.IndexBuffer;
@@ -10414,15 +9515,5 @@ namespace MknGames.FPSWahtever
 
         //    instanceIterator = 0;
         //}
-        public void DrawScreenQuad()
-        {
-            GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
-                quadVertices,
-                0,
-                4,
-                quadIndices,
-                0,
-                2);
-        }
     }
 }

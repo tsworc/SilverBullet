@@ -41,19 +41,35 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FPSWahtever\EditSmallFPSForm.cs">
+    <Compile Include="General\Box.cs" />
+    <Compile Include="General\Bullet.cs" />
+    <Compile Include="General\ContactData.cs" />
+    <Compile Include="General\FPSAccumulator.cs" />
+    <Compile Include="General\FPSEditor.cs" />
+    <Compile Include="General\FPSInput.cs" />
+    <Compile Include="General\Gun.cs" />
+    <Compile Include="General\InstanceData.cs" />
+    <Compile Include="General\IRef.cs" />
+    <Compile Include="General\Player.cs" />
+    <Compile Include="General\Render3D.cs" />
+    <Compile Include="General\SaveLoadVariable.cs" />
+    <Compile Include="General\SignalADSRState.cs" />
+    <Compile Include="General\SmallFPSEditState.cs" />
+    <Compile Include="General\StateMachine.cs" />
+    <Compile Include="General\Target.cs" />
+    <Compile Include="Editor\EditSmallFPSForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FPSWahtever\EditSmallFPSForm.Designer.cs">
+    <Compile Include="Editor\EditSmallFPSForm.Designer.cs">
       <DependentUpon>EditSmallFPSForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FPSWahtever\FPSWhatever.cs" />
-    <Compile Include="FPSWahtever\SmallFPS.cs" />
-    <Compile Include="FPSWahtever\SmallFpsCutScene.cs" />
-    <Compile Include="FPSWahtever\SmallFPSExpansion.cs" />
-    <Compile Include="FPSWahtever\SmallFPSMenu.cs" />
-    <Compile Include="Game1.cs" />
-    <Compile Include="NonGames\CapsuleCollisionRoom.cs" />
+    <Compile Include="General\Textbox.cs" />
+    <Compile Include="Other Programs\FPSWhatever.cs" />
+    <Compile Include="SmallFPS.cs" />
+    <Compile Include="Old\SmallFpsCutScene.cs" />
+    <Compile Include="Old\SmallFPSExpansion.cs" />
+    <Compile Include="Old\SmallFPSMenu.cs" />
+    <Compile Include="Other Programs\CapsuleCollisionRoom.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -76,7 +92,6 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-    <None Include="FPSWahtever\SmallFPS.cs~RF13a7025a.TMP" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\SplitScreenDungeonAndroid\MakinGames\MakinGames\MakinGames.csproj">
@@ -85,7 +100,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FPSWahtever\EditSmallFPSForm.resx">
+    <EmbeddedResource Include="Editor\EditSmallFPSForm.resx">
       <DependentUpon>EditSmallFPSForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
