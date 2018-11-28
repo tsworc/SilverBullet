@@ -367,7 +367,7 @@ expression);
 
         private void button3_Click_2(object sender, EventArgs e)
         {
-            fps.saveRequested = true;
+            fps.editor.saveRequested = true;
         }
 
         //search
@@ -401,7 +401,7 @@ expression);
 
         private void cubes_SubdivideButton_Click(object sender, EventArgs e)
         {
-            fps.editBoxesRequestSubdivide = true;
+            fps.editor.editBoxesRequestSubdivide = true;
         }
 
         //reload shader
