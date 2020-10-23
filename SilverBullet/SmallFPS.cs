@@ -34,7 +34,7 @@ namespace MknGames.FPSWahtever
     //Primary functions: constructor, LoadContent, Update, and Draw.
     //Key Terms: networking, edit, bullets, boxes, guns, player, helper, collision
     //Search Example: "update bullets", "helper csv"
-    public class SmallFPS : fuckwhit_no_cursing
+    public class SmallFPS : DrawableGameComponentMG
     {
         //public class PhysicsStateWrapper
         //{
