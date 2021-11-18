@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverBullet", "SilverBullet\SilverBullet.csproj", "{A1B3E18E-BD08-4771-BF28-AB8CCBA6F8D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakinGames", "..\..\..\SplitScreenDungeonAndroid\MakinGames\MakinGames\MakinGames.csproj", "{7AD14BAF-EC03-4CB0-AC02-0CDA13D4F198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakinGames", "MakinGames\MakinGames\MakinGames.csproj", "{7AD14BAF-EC03-4CB0-AC02-0CDA13D4F198}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +42,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86EEE6FE-DAA2-48A3-9BE7-9FCAD784C00F}
 	EndGlobalSection
 EndGlobal

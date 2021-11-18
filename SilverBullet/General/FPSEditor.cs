@@ -454,12 +454,12 @@ namespace SilverBullet.General
             //edit spawn rotation
             {
                 float rotateStepAngle = MathHelper.PiOver4 / 16;
-                Vector3 start = fps.playerSpawnEuler;
+                Vector3 start = fps.player.playerSpawnEuler;
                 if (game1.kclickheld(Keys.OemPlus))
-                    fps.playerSpawnEuler.Y -= rotateStepAngle;
+                    fps.player.playerSpawnEuler.Y -= rotateStepAngle;
                 if (game1.kclickheld(Keys.OemMinus))
-                    fps.playerSpawnEuler.Y += rotateStepAngle;
-                if (start != fps.playerSpawnEuler)
+                    fps.player.playerSpawnEuler.Y += rotateStepAngle;
+                if (start != fps.player.playerSpawnEuler)
                 {
                     edit.saveNeeded = true;
                 }
@@ -472,8 +472,8 @@ namespace SilverBullet.General
                 // edit player, edit spawn point
                 if (game1.kdown(Keys.D0))
                 {
-                    fps.playerSpawnPoint = boxTop +
-                    Vector3.Up * (fps.height / 2);
+                    fps.player.playerSpawnPoint = boxTop +
+                    Vector3.Up * (fps.player.height / 2);
                 }
                 // edit add box
                 if (game1.kclick(Keys.N))
@@ -485,7 +485,7 @@ namespace SilverBullet.General
                 //edit place target, edit add target
                 if (game1.kclick(Keys.T))
                 {
-                    fps.AddTarget(snap(edit.hoverboxContact + Vector3.Up * dropValue / 2), dropValue / 2);
+                    fps.AddTarget(snap(edit.hoverboxContact + Vector3.Up * fps.player.dropValue / 2), fps.player.dropValue / 2);
                 }
                 //edit add gun, edit new gun, edit place gun
                 if (game1.kclick(Keys.G))

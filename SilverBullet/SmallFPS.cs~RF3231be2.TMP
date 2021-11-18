@@ -34,7 +34,7 @@ namespace MknGames.FPSWahtever
     //Primary functions: constructor, LoadContent, Update, and Draw.
     //Key Terms: networking, edit, bullets, boxes, guns, player, helper, collision
     //Search Example: "update bullets", "helper csv"
-    public class SmallFPS : DrawableGameComponentMG
+    public class SmallFPS : fuckwhit_no_cursing
     {
         //public class PhysicsStateWrapper
         //{
@@ -157,9 +157,82 @@ namespace MknGames.FPSWahtever
 
         int testetseteststest;
         //inst player
-        public Player player = new Player();
+        //Vector2 gv; //player aim center
+        //Matrix untransformedProjection;
+        ////public float jetfuel = 50;
+        ////public float jetfuelrechargerate = 5;
+        ////public float playerFriction = 1;
+        ////public float gunpowder = 
+        //CameraState playerCam = new CameraState();
+        //PhysicsState bodyState = new PhysicsState(1);
+        //Vector3 playerSpawnPoint;
+        //Vector3 playerSpawnEuler;
+        ////public bool wasInContact;
+        //public bool is3rdPerson = false;
+        //float height = 3;
+        //float dropValue;
+        //Vector3 drop;
+        ////float turnElapsed = 0;
+        ////float turnCap = 0.5f;
+        //int sphereBodyCount = 6;
+        //int bodyc;
+        //float moveSpeed;
+        //int stance = 0;
+        //int stance0 = 0;
+        //bool stanceChanged = false;
+        //bool stancekeyheld = false;
+        //FPSInput localInput0;
+        //FPSInput localInput;
+        //int myGunLimit = 1;
+        //Vector3 returnLoc;
+        //public float groundJumpSpeed = 0;
+        //public float jumpSpeed = 0;
+        //public float playerFriction = 0;
+        //public float playerFrictionStopped = 0;
+        //public float playerFrictionAir = 0;
+        //public float playerFrictionOverride = 0;
+        //public float playerInputAccelRate = 0;
+        //public float playerInputDecelRate = 0;
+        //public float playerMoveInputElapsed = 0;
+        //public float playerTerminalVelocity = 0;
+        //public float playerWalkBoost = 0;
+        //public float playerRunBoost = 0;
+        //public float playerFlyBoost = 0;
+        //public float playerGunForwardOffset = 0;
+        //bool playerRequestFrictionOverride = false;
+        //bool playerLeftHandy = false;
+        //bool playerCanSwapToEmpty = false;
+        //const int playerHolsterOcto = 0;
+        //const int playerHolsterAdventurer = 1;
+        //int playerGunHolsterFormation = playerHolsterOcto;
 
         //inst save
+        public class SaveLoadVariable
+        {
+            public string name;
+            public Func<string> write;
+            public Action<string> read;
+
+            public SaveLoadVariable(string name, Func<string> save, Action<string> load)
+            {
+                this.name = name;
+                this.write = save;
+                this.read = load;
+            }
+        }
+        public class SaveLoadVariable<T>
+        {
+            public string name;
+            public Func<T, string> write;
+            public Action<T, string> read;
+
+            public SaveLoadVariable(string name, Func<T, string> save, Action<T, string> load)
+            {
+                this.name = name;
+                this.write = save;
+                this.read = load;
+            }
+        }
         Dictionary<string, SaveLoadVariable> saveLoadVariables = new Dictionary<string, SaveLoadVariable>();
         Dictionary<string, SaveLoadVariable<Gun>> gunSaveLoadVariables = new Dictionary<string, SaveLoadVariable<Gun>>();
         bool requestForceReloadSettings = false;
@@ -181,7 +254,7 @@ namespace MknGames.FPSWahtever
         //inst terrain
         bool terrainActive = true;
         List<Box>[,] terrain;
-        public List<Box> allBoxes = new List<Box>();
+        List<Box> allBoxes = new List<Box>();
         //List<Box> extraBoxes = new List<Box>();
         public const float MAP_SCALE = 2;
         float widthm = 2 * MAP_SCALE;
@@ -195,17 +268,40 @@ namespace MknGames.FPSWahtever
         Vector3 gravity = Vector3.Zero;
 
         //inst rendering
-        Render3D render3d = new Render3D();
+        float renderLightAmbientValue = 0f;
+        Vector3 renderLightDir = Vector3.Zero;
+        RenderTarget2D deferredBuffer0;
+        RenderTarget2D deferredBufferDepth;
+        //inst shadows
+        const int shadowMapCount = 0;
+        //RenderTarget3D cascadeShadowMaps;
+        RenderTarget2D[] cascadeShadowMaps = new RenderTarget2D[shadowMapCount];
+        Matrix[] shadowViews = new Matrix[shadowMapCount];
+        Matrix[] shadowProjections = new Matrix[shadowMapCount];
+        Matrix[] shadowViewProjections = new Matrix[shadowMapCount];
+        float[] cascadeShadowDepthBiasWorld = new float[] { 0.1f, 0.2f,0.4f,0.8f };
+        float[] cascadeShadowSoftSampleDist = new float[] { 1, 1, 1, 1 };
+        Vector3 lightOffset;
+        float[] shadowDistances = new float[] { 300, 300, 300, 300 };
+        float[] shadowProjSizes  = new float[] { 15, 30, 100, 300};
+        bool[] shadowCullCounterclockwise = new bool[] { true, true, true, false };
+        float shadowNonLinearCutoff = 1;
+        float[] cascadingNonLinearCutoffs = new float[4] { 1, 3, 27, 59 };
+        Vector2[] nonLinearMinsPlusRanges = new Vector2[4];
+        Matrix[] cascadingNonLinearProjections = new Matrix[4];
+        Matrix[] cascadingNonLinearViews = new Matrix[4];
+        Matrix[] cascadingNonLinearVPs = new Matrix[4];
+        Matrix[] cascadingInverseNonLinearProjections = new Matrix[4];
 
         //inst bullets
-        public List<Bullet> allbullets = new List<Bullet>();
+        List<Bullet> allbullets = new List<Bullet>();
         //Box boxBullet = null;
         //Bullet bulletBox = null;
 
         //inst targets
         //BoundingSphere[] targets;
-        public Target[] targets;
-        public Vector3[] targetStarts;
+        Target[] targets;
+        Vector3[] targetStarts;
         List<int> capturedTargets = new List<int>();
         //int teleportationTarget = -1;
         //int teleportationTarget2 = -1;
@@ -252,8 +348,11 @@ namespace MknGames.FPSWahtever
         Texture2D frameTx;
 
         //inst sound, inst audio
-        SoundSystem soundSystem = new SoundSystem();
+        WaveOut waveOut;
+        MixingSampleProvider mixer;
+        VolumeSampleProvider mixerVolume;
         SignalADSRState shootSound = new SignalADSRState();
+        bool enableSound = true;
 #if ADD_CLOSED_CAPTIONS
         public Dictionary<string, float> closedCaptions = new Dictionary<string, float>();
 #endif
@@ -262,17 +361,63 @@ namespace MknGames.FPSWahtever
         //OffsetSampleProvider signalOffset;
 
         //inst effect, inst fx
+        Effect basicfx;
+        Effect deferfx;
+        Effect processfx;
+        Effect shadowfx;
+        Effect clearfx;
 
         //inst instancing
-
+        VertexDeclaration instanceDecl = new VertexDeclaration(
+            new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.Position, 0),
+            new VertexElement(sizeof(Single) * 4, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1)
+            //new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0),
+            //new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
+            //new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
+            //new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
+            );
+        VertexBuffer instanceVertexBuffer;
+        //Matrix[] instanceTransforms;
+        const int instanceMax = 10000;
+        public struct InstanceData
+        {
+            public Vector4 position;
+            public Vector4 scale;
+        }
+        InstanceData[] instanceTransforms = new InstanceData[instanceMax];
+        int instanceCubeIterator;
+        VertexBuffer instanceCubeVertexBuffer;
+        IndexBuffer instanceCubeIndexBuffer;
+        
         //float spread = 0;
         //float cooktime;
         //bool grenadexploding;
 
         //inst edit
-        public FPSEditor editor = new FPSEditor();
+        EditSmallFPSForm editor;
+        Thread editorThread;
+        SmallFPSEditState edit = new SmallFPSEditState();
+        //because 1 / 2 = 0.5f so it sorta makes sense to support fractions of 0.5f
+        float editSnapSize = 0.125f;
+        //List<Box> clipboardBoxes = new List<Box>();
+        //Vector3[] clipboardBoxOffsets = null;
+        //Vector3 clipboardBoxContainerSize;
+        Rectangle? mouseUi = null;
+        Gun editHoverGun = null;
+        Gun editGun = null;
+        Textbox currentTextbox = null;
+        Textbox levelFileTxt;
+        Textbox gunFiletxt;
+        bool editMultiSelectInclusively = false;
+        bool editUseSelectionBrush = false;
+        float editSelectionBrushRadius = 2;
+        bool levelUnedited = true;
+        public bool saveRequested = false;
+        public bool editBoxesRequestSubdivide;
+        public bool editBoxesRequestFocus;
+        //public bool loadRequested = false;
 
-        //string currentLevelFilename = "";
+        string currentLevelFilename = "";
 
         //inst guns
         //FieldInfo[] gunFields = typeof(Gun).GetFields();
@@ -291,9 +436,29 @@ namespace MknGames.FPSWahtever
         List<Gun> gunsIveHad = new List<Gun>();
         bool gunsAutofireGunsIveHad = false;
         //Gun gun2;
-        public List<Gun> allguns = new List<Gun>();
+        List<Gun> allguns = new List<Gun>();
         List<Gun> customGuns = new List<Gun>();
         FPSAccumulator updatefps = new FPSAccumulator(), drawfps = new FPSAccumulator();
+        class FPSAccumulator
+        {
+            public float spf;
+            public float sum;
+            public float counter;
+            public int iterations = 60;
+            public float fps;
+            public void Update(float et)
+            {
+                sum += et;
+                counter++;
+                if(counter >= iterations)
+                {
+                    spf = sum / counter;
+                    fps = 1 / spf;
+                    counter = 0;
+                    sum = 0;
+                }
+            }
+        }
         public bool paused;
         public bool stepOver;
         //public bool pauseMenuShowing = false;
@@ -324,7 +489,6 @@ namespace MknGames.FPSWahtever
         //List<int> visibleTargetsGirl = new List<int>();
         //List<int> visibleTargetsBoy = new List<int>();
         public bool wasActive;
-        bool wasMouseLocked = false;
         //public PhysicsState tankps = new PhysicsState(1);
         //public float tankr = 3;
         //public Gun tankgun;
@@ -365,6 +529,13 @@ namespace MknGames.FPSWahtever
         //        this.frust = frust;
         //    }
         //}
+        VertexPositionNormalTexture[] quadVertices = new VertexPositionNormalTexture[]
+        {
+            new VertexPositionNormalTexture(new Vector3(-1,1,0), Vector3.Backward, new Vector2(0,0)),
+            new VertexPositionNormalTexture(new Vector3(1,1,0),Vector3.Backward, new Vector2(1,0)),
+            new VertexPositionNormalTexture(new Vector3(1,-1,0),Vector3.Backward, new Vector2(1,1)),
+            new VertexPositionNormalTexture(new Vector3(-1,-1,0),Vector3.Backward, new Vector2(0,1)),
+        };
         //QuadVertex[] quadVertices = new QuadVertex[]
         //{
         //    new QuadVertex(new Vector3(-1,1,0), new Vector2(0,0), 0),
@@ -373,6 +544,7 @@ namespace MknGames.FPSWahtever
         //    new QuadVertex(new Vector3(-1,-1,0), new Vector2(0,1), 2),
         //};
 
+        int[] quadIndices = new int[] { 0, 1, 2, 0, 2, 3 };
         //Effect doffx, blurfx;
         //RenderTarget2D backbuffrt;
         //RenderTarget2D depthrt;
@@ -383,6 +555,7 @@ namespace MknGames.FPSWahtever
         //public Bullet meleeBullet;
         //public float meleeTime, meleeDuration;
         //public bool meleeing;
+        public bool editOutOfBody = false;
         public bool playOutOfBody = false;
         //int[][] coreTargetsTable;
         //int[] zombieVTargs;
@@ -479,7 +652,8 @@ namespace MknGames.FPSWahtever
 
         bool pauseBullets = false;
         Color bulletTrailColor = Color.Magenta;
-        public  bool editMouseLocked = true;
+        bool wasMouseLocked = false;
+        bool editMouseLocked = true;
         bool gameMouseLocked = true;
 
 
@@ -500,8 +674,14 @@ namespace MknGames.FPSWahtever
             //    remotePort = int.Parse(args[3]);
             //if (args.Length > 4)
             //    pingAddress = args[4];
+            height = 3;
+            dropValue = height / (float)sphereBodyCount;
+            drop = Vector3.Down * dropValue;
+            bodyc = 6;
             game.enableEscapeKeyToQuit = false;
             //game1.Components.Add(new SmallFPSExpansion(game1, this));
+            levelFileTxt = new Textbox((string text) => { currentLevelFilename = text; },
+                () => { return currentLevelFilename; });
 
 
             ////construct networking
@@ -625,7 +805,14 @@ namespace MknGames.FPSWahtever
             game1.Exiting += OnGameExit;
 
             //load editor
-            editor.LoadContent(this);
+            editor = new EditSmallFPSForm(this);
+
+            //load instancing
+            instanceVertexBuffer = new VertexBuffer(GraphicsDevice, instanceDecl, instanceMax, BufferUsage.WriteOnly);
+            //instanceTransforms = new Matrix[instanceMax];
+            Model cubeModel = game1.Content.Load<Model>("cube");
+            instanceCubeIndexBuffer = cubeModel.Meshes[0].MeshParts[0].IndexBuffer;
+            instanceCubeVertexBuffer = cubeModel.Meshes[0].MeshParts[0].VertexBuffer;
 
             //load travel
             //americanFlagTx = game1.Content.Load<Texture2D>("1280px-Flag_of_the_United_States.svg");
@@ -658,41 +845,54 @@ namespace MknGames.FPSWahtever
             //load sound, load audio
             //click = game1.Content.Load<SoundEffect>("fast_snap - 177494__snapper4298__snap-3");
             shootSound = loadSignalASDRState("shoot-sound.csv");
-            soundSystem.Initialize();
+            mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 1));
+            mixer.ReadFully = true;
+            mixerVolume = new VolumeSampleProvider(mixer);
+            mixerVolume.Volume = enableSound ? 1 : 0;
+            waveOut = new WaveOut();
+            waveOut.DesiredLatency = 150;
+            waveOut.NumberOfBuffers = 2;
+            waveOut.Init(mixerVolume);
+            waveOut.Play();
 
             //load models
             surfaceSphere = game1.Content.Load<Model>("surface-sphere");
             cylinder= game1.Content.Load<Model>("flat-normal-cylinder");
             surfaceCylinder = game1.Content.Load<Model>("surface-cylinder");
 
+            //load effects, load fx
+            basicfx = game1.Content.Load<Effect>("Shaders/basic");
+            deferfx = game1.Content.Load<Effect>("Shaders/deferred");
+            processfx = game1.Content.Load<Effect>("Shaders/process");
+            //shadowfx = game1.Content.Load<Effect>("shadow");
+            clearfx = game1.Content.Load<Effect>("Shaders/clear");
 
             //load rendering
-            render3d.LoadContent(GraphicsDevice, game1);
-            //deferredBuffer0 = new RenderTarget2D(
-            //    GraphicsDevice,
-            //    GraphicsDevice.PresentationParameters.BackBufferWidth,
-            //    GraphicsDevice.PresentationParameters.BackBufferHeight,
-            //    false,
-            //    SurfaceFormat.Color,
-            //    DepthFormat.Depth24Stencil8);
-            //deferredBufferDepth = new RenderTarget2D(
-            //    GraphicsDevice,
-            //    GraphicsDevice.PresentationParameters.BackBufferWidth,
-            //    GraphicsDevice.PresentationParameters.BackBufferHeight,
-            //    false,
-            //    SurfaceFormat.Color,
-            //    DepthFormat.Depth24Stencil8);
-            //for (int i = 0; i < shadowMapCount; ++i)
-            //{
-            //    cascadeShadowMaps[i] =
-            //        new RenderTarget2D(
-            //        GraphicsDevice,
-            //        2048,
-            //        2048,
-            //        false,
-            //        SurfaceFormat.Single,
-            //        DepthFormat.Depth24Stencil8);
-            //}
+            deferredBuffer0 = new RenderTarget2D(
+                GraphicsDevice,
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
+            deferredBufferDepth = new RenderTarget2D(
+                GraphicsDevice,
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
+            for (int i = 0; i < shadowMapCount; ++i)
+            {
+                cascadeShadowMaps[i] =
+                    new RenderTarget2D(
+                    GraphicsDevice,
+                    2048,
+                    2048,
+                    false,
+                    SurfaceFormat.Single,
+                    DepthFormat.Depth24Stencil8);
+            }
             //doffx = game1.Content.Load<Effect>("dof");
             //blurfx = game1.Content.Load<Effect>("blur");
             //backbuffrt = new RenderTarget2D(
@@ -750,14 +950,16 @@ namespace MknGames.FPSWahtever
         // on game exit
         private void OnGameExit(object sender, EventArgs e)
         {
-            editor.Cleanup();
+            if (editor.Visible)
+                editorThread.Abort();
             SaveSettings(singlePlayerSaveFileName);
         }
 
         protected override void UnloadContent()
         {
             base.UnloadContent();
-            soundSystem.Cleanup();
+            //unload audio, dispose audio, dispose sound, unload sound
+            waveOut.Dispose();
         }
         //save settings
         public void SaveSettings(string fileName)
@@ -767,17 +969,17 @@ namespace MknGames.FPSWahtever
             using (StreamWriter writer = new StreamWriter(File.Create(fileName)))
             {
                 //writer.WriteLine("bodyStatePos " + csvWriteV3(bodyState.pos));
-                writer.WriteLine("filename " + editor.currentLevelFilename);
-                writer.WriteLine("enableSound " + soundSystem.enableSound);
-                writer.WriteLine("editOutOfBody " + editor.editOutOfBody);
+                writer.WriteLine("filename " + currentLevelFilename);
+                writer.WriteLine("enableSound " + enableSound);
+                writer.WriteLine("editOutOfBody " + editOutOfBody);
                 writer.WriteLine("editMouseLocked " + editMouseLocked);
-                writer.WriteLine("editUseSelectionBrush " + editor.editUseSelectionBrush);
+                writer.WriteLine("editUseSelectionBrush " + editUseSelectionBrush);
                 writer.WriteLine("crouchSpeed " + crouchSpeed);
                 writer.WriteLine("crawlSpeed " + crawlSpeed);
                 writer.WriteLine("standSpeed " + standSpeed);
-                writer.WriteLine("groundJumpSpeed " + player.groundJumpSpeed);
-                writer.WriteLine("jumpSpeed " + player.jumpSpeed);
-                writer.WriteLine("playerFriction " + player.playerFriction);
+                writer.WriteLine("groundJumpSpeed " + groundJumpSpeed);
+                writer.WriteLine("jumpSpeed " + jumpSpeed);
+                writer.WriteLine("playerFriction " + playerFriction);
                 foreach (var pair in saveLoadVariables)
                 {
                     writer.WriteLine(pair.Value.name + " " + pair.Value.write());
@@ -841,7 +1043,7 @@ namespace MknGames.FPSWahtever
             {
                 allbullets.Add(gun.bullets[i]);
             }
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
         }
 
         public void RemoveGun(Gun gun)
@@ -854,7 +1056,7 @@ namespace MknGames.FPSWahtever
                 allbullets.Remove(gun.bullets[i]);
                 gun.bullets.RemoveAt(i--);
             }
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
         }
 
         //drop gun
@@ -900,7 +1102,7 @@ namespace MknGames.FPSWahtever
         //pickup gun
         public bool PickupGun(Gun gun)
         {
-            if (myGuns.Count == player.myGunLimit)
+            if (myGuns.Count == myGunLimit)
                 return false;
             //foreach(Gun g in customGuns)
             //{
@@ -924,44 +1126,50 @@ namespace MknGames.FPSWahtever
                 () => { return gunsAutofireGunsIveHad.ToString(); },
                 (string text) => { gunsAutofireGunsIveHad = bool.Parse(text); });
             AddSaveLoadVariable("playerCanSwapToEmpty",
-                () => { return player.playerCanSwapToEmpty.ToString(); },
-                (string text) => { player.playerCanSwapToEmpty = bool.Parse(text); });
+                () => { return playerCanSwapToEmpty.ToString(); },
+                (string text) => { playerCanSwapToEmpty = bool.Parse(text); });
             AddSaveLoadVariable("playerInputAccelRate",
-                () => { return player.playerInputAccelRate.ToString(); },
-                (string text) => { player.playerInputAccelRate = float.Parse(text); });
+                () => { return playerInputAccelRate.ToString(); },
+                (string text) => { playerInputAccelRate = float.Parse(text); });
             AddSaveLoadVariable("playerInputDecelRate",
-                () => { return player.playerInputDecelRate.ToString(); },
-                (string text) => { player.playerInputDecelRate = float.Parse(text); });
+                () => { return playerInputDecelRate.ToString(); },
+                (string text) => { playerInputDecelRate = float.Parse(text); });
             AddSaveLoadVariable("playerTerminalVelocity",
-                () => { return player.playerTerminalVelocity.ToString(); },
-                (string text) => { player.playerTerminalVelocity = float.Parse(text); });
+                () => { return playerTerminalVelocity.ToString(); },
+                (string text) => { playerTerminalVelocity = float.Parse(text); });
             AddSaveLoadVariable("playerWalkBoost",
-                () => { return player.playerWalkBoost.ToString(); },
-                (string text) => { player.playerWalkBoost = float.Parse(text); });
+                () => { return playerWalkBoost.ToString(); },
+                (string text) => { playerWalkBoost = float.Parse(text); });
             AddSaveLoadVariable("playerRunBoost",
-                () => { return player.playerRunBoost.ToString(); },
-                (string text) => { player.playerRunBoost = float.Parse(text); });
+                () => { return playerRunBoost.ToString(); },
+                (string text) => { playerRunBoost = float.Parse(text); });
             AddSaveLoadVariable("playerFlyBoost",
-                () => { return player.playerFlyBoost.ToString(); },
-                (string text) => { player.playerFlyBoost = float.Parse(text); });
+                () => { return playerFlyBoost.ToString(); },
+                (string text) => { playerFlyBoost = float.Parse(text); });
             AddSaveLoadVariable("playerStoppedFriction",
-                () => { return player.playerFrictionStopped.ToString(); },
-                (string text) => { player.playerFrictionStopped = float.Parse(text); });
+                () => { return playerFrictionStopped.ToString(); },
+                (string text) => { playerFrictionStopped = float.Parse(text); });
             AddSaveLoadVariable("playerAirFriction",
-                () => { return player.playerFrictionAir.ToString(); },
-                (string text) => { player.playerFrictionAir = float.Parse(text); });
+                () => { return playerFrictionAir.ToString(); },
+                (string text) => { playerFrictionAir = float.Parse(text); });
             AddSaveLoadVariable("playerOverrideFriction",
-                () => { return player.playerFrictionOverride.ToString(); },
-                (string text) => { player.playerFrictionOverride = float.Parse(text); });
-            AddSaveLoadVariable("player.playerGunForwardOffset",
-                () => { return player.playerGunForwardOffset.ToString(); },
-                (string text) => { player.playerGunForwardOffset = float.Parse(text); });
+                () => { return playerFrictionOverride.ToString(); },
+                (string text) => { playerFrictionOverride = float.Parse(text); });
+            AddSaveLoadVariable("playerGunForwardOffset",
+                () => { return playerGunForwardOffset.ToString(); },
+                (string text) => { playerGunForwardOffset = float.Parse(text); });
+            AddSaveLoadVariable("renderLightAmbientValue",
+                () => { return renderLightAmbientValue.ToString(); },
+                (string text) => { renderLightAmbientValue = float.Parse(text); });
             AddSaveLoadVariable("playerCam.far",
-                () => { return player.playerCam.far.ToString(); },
-                (string text) => { player.playerCam.far = float.Parse(text); });
+                () => { return playerCam.far.ToString(); },
+                (string text) => { playerCam.far = float.Parse(text); });
             AddSaveLoadVariable("playerCam.near",
-                () => { return player.playerCam.near.ToString(); },
-                (string text) => { player.playerCam.near = float.Parse(text); });
+                () => { return playerCam.near.ToString(); },
+                (string text) => { playerCam.near = float.Parse(text); });
+            AddSaveLoadVariable("shadowNonLinearCutoff",
+                () => { return shadowNonLinearCutoff.ToString(); },
+                (string text) => { shadowNonLinearCutoff = float.Parse(text); });
             //for (int i = 0; i < cascadingNonLinearCutoffs.Length; ++i)
             //{
             //    AddSaveLoadVariable("cascadingNonLinearCutoffs[" + i + "]",
@@ -969,22 +1177,75 @@ namespace MknGames.FPSWahtever
             //        (string text) => { cascadingNonLinearCutoffs[i] = float.Parse(text); });
             //}
             AddSaveLoadVariable("gv",
-                () => { return csvWriteV2(player.gv); },
-                (string text) => { player.gv = csvParseV2(text); });
+                () => { return csvWriteV2(gv); },
+                (string text) => { gv = csvParseV2(text); });
             AddSaveLoadVariable("gravity",
                 () => { return csvWriteV3(gravity); },
                 (string text) => { gravity = csvParseV3(text); });
+            AddSaveLoadVariable("renderLightDir",
+                () => { return csvWriteV3(renderLightDir); },
+                (string text) => { renderLightDir = csvParseV3(text); });
             AddSaveLoadVariable("game1.clearColor",
                 () => { return csvWriteV3(game1.clearColor.ToVector3()); },
                 (string text) => { game1.clearColor = new Color(csvParseV3(text)); });
+            AddSaveLoadVariable("lightOffset",
+                () => { return csvWriteV3(lightOffset); },
+                (string text) => { lightOffset = csvParseV3(text); });
             AddSaveLoadVariable("myGunLimit",
-                () => { return player.myGunLimit.ToString(); },
-                (string text) => { player.myGunLimit = int.Parse(text); });
+                () => { return myGunLimit.ToString(); },
+                (string text) => { myGunLimit = int.Parse(text); });
             AddSaveLoadVariable("playerGunHolsterFormation",
-                () => { return player.playerGunHolsterFormation.ToString(); },
-                (string text) => { player.playerGunHolsterFormation = int.Parse(text); });
+                () => { return playerGunHolsterFormation.ToString(); },
+                (string text) => { playerGunHolsterFormation = int.Parse(text); });
+            AddSaveLoadVariable("shadowDistances",
+                () => {
+                    return writeObjectArray(shadowDistances);
+                },
+                (string text) => {
+                    shadowDistances = readArrayFloat(text);
+                });
+            AddSaveLoadVariable("cascadingNonLinearCutoffs",
+                () => { return writeObjectArray(cascadingNonLinearCutoffs); },
+                (string line) =>
+                {
+                    cascadingNonLinearCutoffs = readArrayFloat(line);
+                });
+            AddSaveLoadVariable("shadowProjSizes",
+                () => {
+                    return writeObjectArray(shadowProjSizes);
+                },
+                (string text) => {
+                    shadowProjSizes = readArrayFloat(text);
+                });
+            AddSaveLoadVariable("shadowDistances",
+                () => {
+                    return writeObjectArray(shadowDistances);
+                },
+                (string text) => {
+                    shadowDistances = readArrayFloat(text);
+                });
+            AddSaveLoadVariable("cascadeShadowDepthBiasWorld",
+                () => {
+                    return writeObjectArray(cascadeShadowDepthBiasWorld);
+                },
+                (string text) => {
+                    cascadeShadowDepthBiasWorld = readArrayFloat(text);
+                });
+            AddSaveLoadVariable("cascadeShadowSoftSampleDist",
+                () => {
+                    return writeObjectArray(cascadeShadowSoftSampleDist);
+                },
+                (string text) => {
+                    cascadeShadowSoftSampleDist = readArrayFloat(text);
+                });
+            AddSaveLoadVariable("shadowCullCounterclockwise",
+                () => {
+                    return writeObjectArray(shadowCullCounterclockwise);
+                },
+                (string text) => {
+                    shadowCullCounterclockwise = readArrayBool(text);
+                });
 
-            render3d.AddVariables(saveLoadVariables);
             //guns
 
             //public float deathDuration;
@@ -1027,13 +1288,14 @@ namespace MknGames.FPSWahtever
                                 //    bodyState.pos = csvParseV3(tokens[1]);
                                 //    break;
                                 case "filename":
-                                    editor.currentLevelFilename = tokens[1];
+                                    currentLevelFilename = tokens[1];
                                     break;
                                 case "enableSound":
-                                    soundSystem.ToggleSound(bool.Parse(tokens[1]));
+                                    enableSound = bool.Parse(tokens[1]);
+                                    mixerVolume.Volume = enableSound ? 1 : 0;
                                     break;
                                 case "editOutOfBody":
-                                    editor.editOutOfBody = bool.Parse(tokens[1]);
+                                    editOutOfBody = bool.Parse(tokens[1]);
                                     break;
                                 case "editMouseLocked":
                                     editMouseLocked = bool.Parse(tokens[1]);
@@ -1041,7 +1303,7 @@ namespace MknGames.FPSWahtever
                                 case "editUseSelectionBrush":
                                     if (tokens.Length > 1)
                                     {
-                                        editor.editUseSelectionBrush = bool.Parse(tokens[1]);
+                                        editUseSelectionBrush = bool.Parse(tokens[1]);
                                     }
                                     break;
                                 case "crouchSpeed":
@@ -1054,13 +1316,13 @@ namespace MknGames.FPSWahtever
                                     standSpeed = float.Parse(tokens[1]);
                                     break;
                                 case "groundJumpSpeed":
-                                    player.groundJumpSpeed = float.Parse(tokens[1]);
+                                    groundJumpSpeed = float.Parse(tokens[1]);
                                     break;
                                 case "jumpSpeed":
-                                    player.jumpSpeed = float.Parse(tokens[1]);
+                                    jumpSpeed = float.Parse(tokens[1]);
                                     break;
                                 case "playerFriction":
-                                    player.playerFriction = float.Parse(tokens[1]);
+                                    playerFriction = float.Parse(tokens[1]);
                                     break;
                             }
                             if (saveLoadVariables.ContainsKey(tokens[0]))
@@ -1146,7 +1408,7 @@ namespace MknGames.FPSWahtever
             //    basicfx = new Effect(GraphicsDevice, fileBytes);
             //}
             //playerCam.far =100;
-            //playerCam.near = 2;// player.dropValue/2;
+            //playerCam.near = 2;// dropValue/2;
             //reload lists
             //expiredBullets.Clear();
             allBoxes.Clear();
@@ -1224,14 +1486,14 @@ namespace MknGames.FPSWahtever
             // reload terrain data
             if (terrainActive)
             {
-                if (!string.IsNullOrWhiteSpace(editor.currentLevelFilename) && File.Exists(editor.currentLevelFilename))
+                if (!string.IsNullOrWhiteSpace(currentLevelFilename) && File.Exists(currentLevelFilename))
                 {
                     loadlevel();
                 }
                 else
                 {
-                    player.playerSpawnPoint = Vector3.Up * player.height / 2;
-                    player.playerSpawnEuler = new Vector3(0, -MathHelper.Pi / 1.5f, 0);
+                    playerSpawnPoint = Vector3.Up * height / 2;
+                    playerSpawnEuler = new Vector3(0, -MathHelper.Pi / 1.5f, 0);
                     //Dictionary<Point, int> shapes = new Dictionary<Point, int>();
                     //{
                     //    shapes.Add(new Point(5, 5), 0);
@@ -1383,13 +1645,11 @@ namespace MknGames.FPSWahtever
             //boxBullet.type = 0;
             //boxBullet.color = monochrome(1.0f, 1.0f);
             //AddBox(boxBullet);
-            fastGun = new Gun(0.05f,2,true,3);
-            fastGun.bulletSpeed = 500;
-            fastGun.filename = "fastgun.txt";
+            //fastGun = new Gun();
+            //fastGun.bulletSpeed = 500;
             //fastGun.init(allbullets, .05f, 2, true);
-            gunrackify(fastGun);
-            fastGun.automaticFireDelayS = 1.5f;
-            PickupGun(fastGun);
+            //fastGun.automaticFireDelayS = 1.5f;
+            //fastGun.bulletSpeed = 500;
 
             slowGun = new Gun(0.05f, 12, false, 4);
             slowGun.filename = "slowgun.txt";
@@ -1491,8 +1751,8 @@ namespace MknGames.FPSWahtever
             //Box ceilBox = new Box(new Vector3(mapWidth, 1, mapDepth), new Vector3(mapWidth/2, mh + 0.5f - 0.5f, mapDepth/2));
             //extraBoxes.Add(ceilBox);
             //allBoxes.Add(ceilBox);
-            targetRestY = player.height - player.dropValue / 2;
-            //targetRestY = player.dropValue/2;
+            targetRestY = height - dropValue / 2;
+            //targetRestY = dropValue/2;
             //targetHitY = height * 2;
             targetHitY = 0.5f;
             //target2HitY = 0;
@@ -1529,7 +1789,7 @@ namespace MknGames.FPSWahtever
             //    //if (i == 3)
             //    //    break;
             //    Vector3 center = randv3();
-            //    float radius = player.dropValue / 2;
+            //    float radius = dropValue / 2;
             //    float grow = 0.1f;
             //    //targets[i] = new BoundingSphere(center, radius);
             //    //targets[i+1] = new BoundingSphere(center, radius + grow);
@@ -1548,7 +1808,7 @@ namespace MknGames.FPSWahtever
             //    //    game1.randf(widthm * terrain.GetLength(0)),
             //    //    targetRestY,
             //    //    game1.randf(depthm * terrain.GetLength(1))),
-            //    //    player.dropValue / 2);
+            //    //    dropValue / 2);
             //    //if(game1.rand.Next(2) == 0)
             //    //{
             //    //    targets[i].isCube = true;
@@ -1605,7 +1865,7 @@ namespace MknGames.FPSWahtever
             //enemyPlayer.pos = spawnB;
             ////"spare" targets
             //for (int i = 0; i < 10; ++i)
-            //    newtargs.Add(new BoundingSphere(new Vector3(0, -200, 0), player.dropValue / 2));
+            //    newtargs.Add(new BoundingSphere(new Vector3(0, -200, 0), dropValue / 2));
 
             //reload zombies
             //zombieVTargs = new int[zombies.Length];
@@ -1644,18 +1904,18 @@ namespace MknGames.FPSWahtever
             ////        zombieVTargs[i] = newtargs.Count;
             ////    }
             //    Vector3 center = randv3();
-            //    float radius = player.dropValue / 2;
+            //    float radius = dropValue / 2;
             //    newtargs.Add(new BoundingSphere(center, radius));
             //}
 
             //reload player
-            player.moveSpeed = standSpeed;
+            moveSpeed = standSpeed;
             //bodyState.pos = unitSpawn(true, -1);
-            player.bodyState.mass = 45;
-            player.bodyState.pos = player.playerSpawnPoint;
-            player.playerCam.Euler = player.playerSpawnEuler;
-            player.bodyState.vel = Vector3.Zero;
-            player.bodyState.force = Vector3.Zero;
+            bodyState.mass = 45;
+            bodyState.pos = playerSpawnPoint;
+            playerCam.Euler = playerSpawnEuler;
+            bodyState.vel = Vector3.Zero;
+            bodyState.force = Vector3.Zero;
             //playerSelfTarget = newtargs.Count;
 
             //reload travel
@@ -1711,8 +1971,8 @@ namespace MknGames.FPSWahtever
             //dialogBox = new Rectangle(0, 0, 500, 50);
             //if(dialogRt == null)
             //    dialogRt = new RenderTarget2D(GraphicsDevice, dialogBox.Width, dialogBox.Height);
-            //newtargs.Add(new BoundingSphere(coordToWorld(new Point(4, 8), 43), player.dropValue/2));
-            //narrativeBox = new FPSWahtever.SmallFPS.Box(new Vector3(player.dropValue), coordToWorld(new Point(4, 3), player.dropValue/2));
+            //newtargs.Add(new BoundingSphere(coordToWorld(new Point(4, 8), 43), dropValue/2));
+            //narrativeBox = new FPSWahtever.SmallFPS.Box(new Vector3(dropValue), coordToWorld(new Point(4, 3), dropValue/2));
             //narrativeBox.color = monochrome(0.5f);
             //narrativeBoxExcitement = 0;
             //narrativeBoxForce = 0;
@@ -1755,7 +2015,7 @@ namespace MknGames.FPSWahtever
             //        //}
             //    }
             //    unit.selfTarget = newtargs.Count;
-            //    newtargs.Add(new BoundingSphere(unit.pos, player.dropValue / 2));
+            //    newtargs.Add(new BoundingSphere(unit.pos, dropValue / 2));
             //    units.Add(unit);
             //}
 
@@ -1771,9 +2031,9 @@ namespace MknGames.FPSWahtever
             //gunMechTarget = targets.Length;
             //Vector3 targetPosition = gunMech.pos;
             //targetPosition.Y = targetRestY;
-            ////AddTarget(new BoundingSphere(targetPosition, player.dropValue / 2));
-            //AddTarget(new Target(targetPosition, player.dropValue / 2));
-            //reloadMech = new BoundingSphere(gunMech.pos, player.dropValue / 2);
+            ////AddTarget(new BoundingSphere(targetPosition, dropValue / 2));
+            //AddTarget(new Target(targetPosition, dropValue / 2));
+            //reloadMech = new BoundingSphere(gunMech.pos, dropValue / 2);
             //reloadMech.Center.Y = 0;
             //reloadMechBullet = null;
             //reloadMechGun = gunMech;
@@ -1792,6 +2052,12 @@ namespace MknGames.FPSWahtever
         }
 
         //helper input
+        public bool RequestText(Textbox caller)
+        {
+            game1.restrictedInput = true;
+            currentTextbox = caller;
+            return true;
+        }
         public bool mouseHover(Rectangle rect)
         {
             return rect.Contains(game1.mouseCurrent.Position);
@@ -1839,7 +2105,24 @@ namespace MknGames.FPSWahtever
         //helper misc
         public bool OutOfBody()
         {
-            return (editor.edit.active && editor.editOutOfBody) || (!editor.edit.active && playOutOfBody);
+            return (edit.active && editOutOfBody) || (!edit.active && playOutOfBody);
+        }
+        public static float GetVectorComponent(Vector3 vector, int index)
+        {
+            if (index < 0 || index > 2)
+                throw new ArgumentOutOfRangeException();
+            return index == 0 ? vector.X : index == 1 ? vector.Y : vector.Z;
+        }
+        public static void SetVectorComponent(ref Vector3 vector, int index, float value)
+        {
+            if (index < 0 || index > 2)
+                throw new ArgumentOutOfRangeException();
+            if (index == 0)
+                vector.X = value;
+            else if (index == 1)
+                vector.Y = value;
+            else
+                vector.Z = value;
         }
         public static Vector2 xz(Vector3 input)
         {
@@ -1871,7 +2154,7 @@ namespace MknGames.FPSWahtever
             }
             targets = larger;
             targetStarts = largerStarts;
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
         }
         public void RemoveTargetAt(int t)
         {
@@ -1890,7 +2173,7 @@ namespace MknGames.FPSWahtever
             }
             targets = smaller;
             targetStarts = smallerStarts;
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
         }
         //Vector3 unitSpawn(bool ally, int i)
         //{
@@ -1900,7 +2183,7 @@ namespace MknGames.FPSWahtever
         //    else
         //        pos = Vector3.Backward * (terrain.GetLength(1) - 1) * depthm +
         //        Vector3.Right * widthm * (terrain.GetLength(0) - 1) + Vector3.Left * widthm * i;
-        //    pos.Y = height - player.dropValue / 2;
+        //    pos.Y = height - dropValue / 2;
         //    return pos;
         //}
         public static void UpdateGunFromCam(Gun gun, CameraState cam, Vector2 normScreen, GraphicsDevice gd, bool aimDownSight, SmallFPS fps)
@@ -1909,11 +2192,11 @@ namespace MknGames.FPSWahtever
             Ray toGunRay = cam.ScreenToRay(
                     Backpack.percentageLocation(gd.Viewport.Bounds, normScreen.X, normScreen.Y),
                     gd.Viewport);
-            Vector3 top = fps.player.bodyState.pos + Vector3.Up * (fps.player.bodyc / 2 * fps.player.dropValue - fps.player.dropValue / 2);
+            Vector3 top = fps.bodyState.pos + Vector3.Up * (fps.bodyc / 2 * fps.dropValue - fps.dropValue / 2);
             if (aimDownSight)
-                gun.pos = top + toGunRay.Direction * fps.player.playerGunForwardOffset + Vector3.Down * gun.BulletSize;
+                gun.pos = top + toGunRay.Direction * fps.playerGunForwardOffset + Vector3.Down * gun.BulletSize;
             else
-                gun.pos = top + toGunRay.Direction * fps.player.playerGunForwardOffset;
+                gun.pos = top + toGunRay.Direction * fps.playerGunForwardOffset;
             Vector2 screens = gd.Viewport.Bounds.Size.ToVector2();
             Vector2 screenc = screens / 2;
             Vector3 d = cam.ScreenToWorld(screenc, 1, gd.Viewport);
@@ -2086,14 +2369,14 @@ namespace MknGames.FPSWahtever
         { //start update
             //if (!loadContentComplete)
             //    return;
-            if(editor.editor.SetReady())
+            if(editor.SetReady())
             {
-                editor.editor.PerformSet();
+                editor.PerformSet();
             }
-            if(editor.saveRequested)
+            if(saveRequested)
             {
                 SaveSettings(singlePlayerSaveFileName);
-                editor.saveRequested = false;
+                saveRequested = false;
             }
             base.Update(gameTime);
             float et = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -2245,8 +2528,8 @@ namespace MknGames.FPSWahtever
             //    //pair.Value.gun.pos = 
             //    //    pair.Value.pos + 
             //    //    //Vector3.Up * height / 8 + 
-            //    //    gunright * player.dropValue/1.5f;
-            //    //targets[pair.Value.selfTarget].Center = pair.Value.pos + Vector3.Up * (height / 2 - player.dropValue / 2);
+            //    //    gunright * dropValue/1.5f;
+            //    //targets[pair.Value.selfTarget].Center = pair.Value.pos + Vector3.Up * (height / 2 - dropValue / 2);
             //    //game1.add3DLine(pair.Value.pos, pair.Value.pos + Vector3.Transform(Vector3.Forward, pair.Value.gun.rot),
             //    //    Color.Green);
             //    if (pair.Value.input.shoot)
@@ -2268,24 +2551,24 @@ namespace MknGames.FPSWahtever
             //    playerFriction = 1;
 
             //drop gun
-            if (game1.kclick(Keys.LeftControl) && !editor.edit.active)
-                player.playerRequestFrictionOverride = !player.playerRequestFrictionOverride;
+            if (game1.kclick(Keys.LeftControl) && !edit.active)
+                playerRequestFrictionOverride = !playerRequestFrictionOverride;
             if (game1.kclick(Keys.Z))
             {
                 if (guni < myGuns.Count)
                     DropGun(guni);
             }
             if (game1.kclick(Keys.F))
-                player.is3rdPerson = !player.is3rdPerson;
+                is3rdPerson = !is3rdPerson;
             if (game1.kclick(Keys.Q))
             {
                 gameMouseLocked = !gameMouseLocked;
             }
             //update mouse
             bool mouseLocked = true;
-            if (!editMouseLocked && editor.edit.active)
+            if (!editMouseLocked && edit.active)
                 mouseLocked = false;
-            if (!editor.edit.active && !gameMouseLocked)
+            if (!edit.active && !gameMouseLocked)
                 mouseLocked = false;
             if (game1.IsActive)
             {
@@ -2299,15 +2582,15 @@ namespace MknGames.FPSWahtever
                         mdx = md.X;
                         mdy = md.Y;
                         //update camera look
-                        player.playerCam.Euler.Y -= mdx / (float)GraphicsDevice.Viewport.Width;
-                        player.playerCam.Euler.X -= mdy / (float)GraphicsDevice.Viewport.Width;
+                        playerCam.Euler.Y -= mdx / (float)GraphicsDevice.Viewport.Width;
+                        playerCam.Euler.X -= mdy / (float)GraphicsDevice.Viewport.Width;
                     }
 
                     //update mouse position, update mouse visibility
                     Mouse.SetPosition(c.X, c.Y);
                     game1.IsMouseVisible = false;
                 }
-                else if (!editor.edit.active)
+                else if (!edit.active)
                 {
                     Vector2 mouse = game1.mouseCurrent.Position.ToVector2();
                     int thresh = 5;
@@ -2318,57 +2601,56 @@ namespace MknGames.FPSWahtever
             }
             if (!mouseLocked)// edit.active)
             {
-                if (editor.edit.active)
+                if (edit.active)
                     game1.IsMouseVisible = true;
             }
             wasMouseLocked = mouseLocked;
             wasActive = game1.IsActive;
             Vector3 moveInput = Vector3.Zero;
-            Vector3 camForward = Vector3.Transform(Vector3.Forward, player.playerCam.rotation3D);
-            Vector3 camRight = Vector3.Transform(Vector3.Right, player.playerCam.rotation3D);
+            Vector3 camForward = Vector3.Transform(Vector3.Forward, playerCam.rotation3D);
+            Vector3 camRight = Vector3.Transform(Vector3.Right, playerCam.rotation3D);
             Vector3 camForwardFlat = camForward; camForwardFlat.Y = 0;
             camForwardFlat.Normalize();
-
-            player.localInput0 = player.localInput;
-            player.localInput = new FPSInput();
+            localInput0 = localInput;
+            localInput = new FPSInput();
             if (game1.kdown(Microsoft.Xna.Framework.Input.Keys.W))
             {
-                player.localInput.forward = true;
+                localInput.forward = true;
             }
             if (game1.kdown(Microsoft.Xna.Framework.Input.Keys.S) && !controlDown)
             {
-                player.localInput.back = true;
+                localInput.back = true;
             }
             if (game1.kdown(Microsoft.Xna.Framework.Input.Keys.D))
             {
-                player.localInput.right = true;
+                localInput.right = true;
             }
             if (game1.kdown(Microsoft.Xna.Framework.Input.Keys.A))
             {
-                player.localInput.left = true;
+                localInput.left = true;
             }
             if (game1.kdown(Microsoft.Xna.Framework.Input.Keys.Space))
             {
-                player.localInput.jump = true;
+                localInput.jump = true;
                 //bodyState.vel.Y += 5f;
             }
-            if (player.localInput.forward)
+            if (localInput.forward)
             {
                 moveInput.Z += 1;
             }
-            if (player.localInput.back)
+            if (localInput.back)
             {
                 moveInput.Z -= 1;
             }
-            if (player.localInput.right)
+            if (localInput.right)
             {
                 moveInput.X += 1;
             }
-            if (player.localInput.left)
+            if (localInput.left)
             {
                 moveInput.X -= 1;
             }
-            if (player.localInput.jump)
+            if (localInput.jump)
             {
                 moveInput.Y = 1;
                 //bodyState.vel.Y += 5f;
@@ -2377,25 +2659,68 @@ namespace MknGames.FPSWahtever
             {
                 if (controlDown)
                 {
-                    player.returnLoc = player.bodyState.pos;
-                    player.bodyState.pos = player.playerSpawnPoint;
+                    returnLoc = bodyState.pos;
+                    bodyState.pos = playerSpawnPoint;
                 }
                 else if (shiftDown)
-                    player.bodyState.pos = player.returnLoc;
+                    bodyState.pos = returnLoc;
                 else
                     reload();
             }
-            float speedboost = player.playerWalkBoost;
+            float speedboost = playerWalkBoost;
+            Action<int, float, int> changeStance = (int spherecount, float speed, int stancelabel) =>
+            {
+                int delta = spherecount - bodyc;
+                bodyc += delta;
+                moveSpeed = speed;
+                //move up or down for each sphere
+                bodyState.pos += (Vector3.Up * (height / 6 * delta)) / 2;
+                stance0 = stance;
+                stance = stancelabel;
+                stanceChanged = true;
+            };
+            if (game1.kclick(Keys.C) && !controlDown)
+            {
+                if (stance == 0)//standing
+                {
+                    //crouch
+                    changeStance(sphereBodyCount - 2, crouchSpeed, 1);
+                }
+                if (stance == 2)
+                {
+                    //stand
+                    changeStance(sphereBodyCount - 2, crouchSpeed, 1);
+                }
+            }
+            if (game1.kheld(Keys.C) && !controlDown)
+            {
+                if (stance == 0 || stance == 1)
+                {
+                    if (!stanceChanged || stance0 == 0) //allow stand>crouch>prone but not prone>stand>prone
+                    {
+                        changeStance(sphereBodyCount - 4, crawlSpeed, 2);
+                    }
+                }
+                stancekeyheld = true;
+            }
+            if (game1.krelease(Keys.C) && !controlDown)
+            {
+                if (stance == 1 && !stancekeyheld && !stanceChanged)
+                {
+                    changeStance(sphereBodyCount, standSpeed, 0);
+                }
+                stancekeyheld = false;
+                stanceChanged = false;
+            }
             if (game1.kdown(Keys.LeftShift))
             {
-                speedboost = player.playerRunBoost;
+                speedboost = playerRunBoost;
             }
-            player.UpdateStanceInput(game1, controlDown, shiftDown);
             bool playerTouchingGround = false;
             {
-                Vector3 start = player.bodyState.pos;
+                Vector3 start = bodyState.pos;
                 float slop = 0.01f;
-                Vector3 toGround = Vector3.Down * ((float)player.bodyc / 2 * player.dropValue + slop);
+                Vector3 toGround = Vector3.Down * ((float)bodyc / 2 * dropValue + slop);
                 Vector3 end = start + toGround;
                 float groundDist = toGround.Length();
                 Ray groundRay = new Ray(start, toGround / groundDist);
@@ -2412,20 +2737,20 @@ namespace MknGames.FPSWahtever
             }
             if(!playerTouchingGround)
             {
-                speedboost = player.playerFlyBoost;
+                speedboost = playerFlyBoost;
             }
                     Vector3 moveDirection = Vector3.Zero;
             if (moveInput.X != 0 || moveInput.Z != 0)
             {
                 moveDirection = Vector3.Normalize(moveInput.X * camRight + moveInput.Z * camForwardFlat);
                 //moveDirection = Vector3.Normalize(moveInput.X * camRight + moveInput.Z * camForward);
-                player.playerMoveInputElapsed += player.playerInputAccelRate * et;
+                playerMoveInputElapsed += playerInputAccelRate * et;
             }else
             {
-                player.playerMoveInputElapsed -= player.playerInputDecelRate * et;
+                playerMoveInputElapsed -= playerInputDecelRate * et;
             }
-            player.playerMoveInputElapsed = MathHelper.Clamp(player.playerMoveInputElapsed, 0, 1);
-            Vector3 movementForce = moveDirection * player.moveSpeed * speedboost * et * player.bodyState.mass * player.playerMoveInputElapsed;
+            playerMoveInputElapsed = MathHelper.Clamp(playerMoveInputElapsed, 0, 1);
+            Vector3 movementForce = moveDirection * moveSpeed * speedboost * et * bodyState.mass * playerMoveInputElapsed;
             //if (intank)
             //{
             //    tankps.force += movementForce;
@@ -2436,35 +2761,34 @@ namespace MknGames.FPSWahtever
             //}
             //else
             //{
-            if (editor.edit.active && editor.editOutOfBody)
+            if (edit.active && editOutOfBody)
             {
                 //Vector3 nonplanardir = Vector3.Zero;
                 //if (direction.LengthSquared() > 0)
                 //    nonplanardir = Vector3.Normalize(direction.X * rt + direction.Z * camForward);
-                player.playerCam.pos += moveDirection * player.moveSpeed * speedboost * et * et;
+                playerCam.pos += moveDirection * moveSpeed * speedboost * et * et;
                 float risefall = 1;
                 if (game1.kdown(Keys.LeftShift))
                     risefall = -1;
                 if (moveInput.Y != 0)
                 {
-                    player.playerCam.pos.Y += player.moveSpeed * et * et * risefall * moveInput.Y;
+                    playerCam.pos.Y += moveSpeed * et * et * risefall * moveInput.Y;
                 }
             }
             else
             {
                 if (true)
                 {
-                    player.bodyState.force += movementForce;
+                    bodyState.force += movementForce;
                     //float preY = bodyState.vel.Y;
                     //bodyState.vel = Vector3.Lerp(bodyState.vel, movementForce / bodyState.mass * et * 50, 0.1f);
                     //bodyState.vel.Y = preY;
-                    float jumpImpulse = 0;
-                    if(et != 0) jumpImpulse = (-gravity.Y / et) + player.jumpSpeed;
-                    if (moveInput.Y > 0 && player.bodyState.vel.Y <= 0 && playerTouchingGround)
+                    float jumpImpulse = (-gravity.Y / et) + jumpSpeed;
+                    if (moveInput.Y > 0 && bodyState.vel.Y <= 0 && playerTouchingGround)
                     {
-                        jumpImpulse = player.groundJumpSpeed;
+                        jumpImpulse = groundJumpSpeed;
                     }
-                    player.bodyState.force += Vector3.Up * jumpImpulse * moveInput.Y * player.bodyState.mass * et;
+                    bodyState.force += Vector3.Up * jumpImpulse * moveInput.Y * bodyState.mass * et;
                 }
                 else
                 {
@@ -2493,7 +2817,7 @@ namespace MknGames.FPSWahtever
             if (currentGun != null)
             {
                 if (game1.IsActive
-                && !editor.edit.active
+                && !edit.active
                 && (game1.kclick(Microsoft.Xna.Framework.Input.Keys.Up)
                     || (game1.mouseCurrent.LeftButton == ButtonState.Pressed)
                     //&& game1.mouseOld.LeftButton == ButtonState.Released)
@@ -2501,12 +2825,12 @@ namespace MknGames.FPSWahtever
                     || game1.kdown(Keys.OemCloseBrackets))
                 && GraphicsDevice.Viewport.Bounds.Contains(game1.mouseCurrent.Position))
                 {
-                    player.localInput.shoot = true;
+                    localInput.shoot = true;
                 }
             }
             //update shoot gun
             chargeShotDelay = 0.1f;
-            if (player.localInput.shoot)
+            if (localInput.shoot)
             {
                 if (currentGun == chargeShot)
                 {
@@ -2518,7 +2842,7 @@ namespace MknGames.FPSWahtever
                     chargeShot.bulletsPerShot =
                         MathHelper.Clamp(chargeShot.bulletsPerShot + 1, 1, chargeShot.bullets.Count);
                 }
-                if (currentGun != chargeShot && currentGun.TriggerDown(player.bodyState))
+                if (currentGun != chargeShot && currentGun.TriggerDown(bodyState))
                 {
                     //update shoot recoil/kickback
                     //for (int i = 0; i < currentGun.bullets.Length; ++i)
@@ -2545,7 +2869,7 @@ namespace MknGames.FPSWahtever
                     sinAdsr.AttackSeconds = totalTime * shootSound.attackP;
                     sinAdsr.ReleaseSeconds = totalTime - sinAdsr.AttackSeconds;
                     //mixer.AddMixerInput(adsr.Take(TimeSpan.FromSeconds(currentGun.automaticFireDelayS/2)));
-                    soundSystem.AddMixerInput(sinAdsr.Take(TimeSpan.FromSeconds(totalTime)), "gun being shot", 3);
+                    AddMixerInput(sinAdsr.Take(TimeSpan.FromSeconds(totalTime)), "gun being shot", 3);
                     //mixer.AddMixerInput(noiseAdsr.Take(TimeSpan.FromSeconds(noiseAdsr.AttackSeconds + noiseAdsr.ReleaseSeconds)));
                 }
                 //if (!currentGun.requireTriggerUp)
@@ -2599,9 +2923,9 @@ namespace MknGames.FPSWahtever
                 {
                     currentGun.TriggerUp();
                 }
-                if (player.localInput0.shoot && currentGun == chargeShot && currentGun != null)
+                if (localInput0.shoot && currentGun == chargeShot && currentGun != null)
                 {
-                    currentGun.TriggerDown(player.bodyState);
+                    currentGun.TriggerDown(bodyState);
                     currentGun.TriggerUp();
                     currentGun.bulletsPerShot = 1;
                     chargeShotElapsed = 0;
@@ -2609,10 +2933,10 @@ namespace MknGames.FPSWahtever
             }
             //update current gun with middle mouse
             int swd = game1.mouseCurrent.ScrollWheelValue - game1.mouseOld.ScrollWheelValue;
-            if (swd != 0 && !editor.edit.active)
+            if (swd != 0 && !edit.active)
             {
                 int max = myGuns.Count;
-                if(player.playerCanSwapToEmpty)
+                if(playerCanSwapToEmpty)
                     max = (myGuns.Count + 1);
                 if (max > 0)
                 {
@@ -2646,7 +2970,7 @@ namespace MknGames.FPSWahtever
             //{
             //    playerCam.zooming = true;
             //}
-            if (!editor.edit.active)
+            if (!edit.active)
             {
                 for (int i = 0; i < 10; ++i)
                 {
@@ -2674,16 +2998,16 @@ namespace MknGames.FPSWahtever
             //}
             //update player position
             //float airFriction = 8;
-            player.bodyState.force -= player.bodyState.vel * player.playerFrictionAir;
-            player.bodyState.force += gravity * player.bodyState.mass;
-            player.bodyState.Advance(et);
-            if(player.bodyState.vel.LengthSquared() > player.playerTerminalVelocity * player.playerTerminalVelocity)
+            bodyState.force -= bodyState.vel * playerFrictionAir;
+            bodyState.force += gravity * bodyState.mass;
+            bodyState.Advance(et);
+            if(bodyState.vel.LengthSquared() > playerTerminalVelocity * playerTerminalVelocity)
             {
-                Vector3 oldVel = player.bodyState.vel;
-                float vel = player.bodyState.vel.Length();
-                player.bodyState.vel /= vel;
-                player.bodyState.vel *= player.playerTerminalVelocity;
-                player.bodyState.force += (player.bodyState.vel - oldVel) * player.bodyState.mass / et; //preemptive force, penalty
+                Vector3 oldVel = bodyState.vel;
+                float vel = bodyState.vel.Length();
+                bodyState.vel /= vel;
+                bodyState.vel *= playerTerminalVelocity;
+                bodyState.force += (bodyState.vel - oldVel) * bodyState.mass / et; //preemptive force, penalty
             }
 
             //targets[playerSelfTarget].Center = bodyState.pos;
@@ -3218,9 +3542,9 @@ namespace MknGames.FPSWahtever
             //    ) * tankr;
             //tankgun.rot = tankrot;// Matrix.CreateRotationY(tankeu.Y);
             //tankps.Advance(et);
-            float heightPercentage = (float)player.bodyc / (float)player.sphereBodyCount;
-            float totalHeight = player.height * heightPercentage;
-            Vector3 top = player.bodyState.pos + (totalHeight / 2) * Vector3.Up;
+            float heightPercentage = (float)bodyc / (float)sphereBodyCount;
+            float totalHeight = height * heightPercentage;
+            Vector3 top = bodyState.pos + (totalHeight / 2) * Vector3.Up;
             //Vector3 top = bodyState.pos + (height / 2) * Vector3.Up;
             //gun2.pos = new Vector3(20, 1, 20);
             //gun2.rot = Matrix.CreateRotationY(MathHelper.Pi);
@@ -3230,9 +3554,9 @@ namespace MknGames.FPSWahtever
             bool playerMakingContact = false;
             Vector3 randomPlayerBoxContact = Vector3.Zero;
             int bodyshots = 0;
-            for (int i = 0; i < player.bodyc; ++i)
+            for (int i = 0; i < bodyc; ++i)
             {
-                BoundingSphere sphereVolume = new BoundingSphere(top + player.drop * i + player.drop / 2, player.dropValue / 2);
+                BoundingSphere sphereVolume = new BoundingSphere(top + drop * i + drop / 2, dropValue / 2);
                 //update player hit obb
                 //{
                 //    Vector3 cp = closestPointSphereOBB(sphereVolume, obbPos, obbSize, obbRot);
@@ -3290,14 +3614,14 @@ namespace MknGames.FPSWahtever
                             //    bodyState.pos -= sphereSurfaceNormal * (penetration - slop);
                             //}
                             playerMakingContact = true;
-                            float speedTowardsBox = Vector3.Dot(sphereSurfaceNormal, player.bodyState.vel);
-                            Vector3 tangent = player.bodyState.vel - speedTowardsBox * sphereSurfaceNormal;
+                            float speedTowardsBox = Vector3.Dot(sphereSurfaceNormal, bodyState.vel);
+                            Vector3 tangent = bodyState.vel - speedTowardsBox * sphereSurfaceNormal;
                             float restitution = 0;// box.restitution;
-                            float friction = player.playerFriction;
+                            float friction = playerFriction;
                             if (movementForce.LengthSquared() == 0)
-                                friction = player.playerFrictionStopped;
-                            if (player.playerRequestFrictionOverride)
-                                friction = player.playerFrictionOverride;
+                                friction = playerFrictionStopped;
+                            if (playerRequestFrictionOverride)
+                                friction = playerFrictionOverride;
                             //bool doesPositionResponse = true;
                             //    box.GetMaterialProperties(out friction, out restitution, out doesPositionResponse);
                             if (speedTowardsBox > 0)
@@ -3305,17 +3629,17 @@ namespace MknGames.FPSWahtever
                                 randomPlayerBoxContact = sphereVolume.Center + sphereSurfaceNormal * (sphereVolume.Radius - penetration);
                                 //if (box.embedsBulletOnImpact)
                                 //    friction = 0.3f;
-                                player.bodyState.vel -= (1 + restitution) * sphereSurfaceNormal * speedTowardsBox;
+                                bodyState.vel -= (1 + restitution) * sphereSurfaceNormal * speedTowardsBox;
                                 if (restitution == 0)
                                 {
                                     //bodyState.force -= gravity;
                                 }
                                 //friction *= playerFriction;
-                                player.bodyState.vel -= tangent * friction;
+                                bodyState.vel -= tangent * friction;
                             }
                             //if (doesPositionResponse)
                             //{
-                            player.bodyState.pos -= sphereSurfaceNormal * (penetration);
+                            bodyState.pos -= sphereSurfaceNormal * (penetration);
                             //}
                             //allContacts.Add(new ContactData()
                             //{
@@ -3327,7 +3651,7 @@ namespace MknGames.FPSWahtever
                             //});
 
                             //Vector3 bot = bodyState.pos + Vector3.Down * (height / 2);
-                            //if (i >= player.bodyc - 3)
+                            //if (i >= bodyc - 3)
                             //{
                             //    Vector3 contact = sphereVolume.Center + sphereSurfaceNormal * (sphereVolume.Radius - penetration);
                             //    Vector3 toBot = bot - contact;
@@ -3338,7 +3662,7 @@ namespace MknGames.FPSWahtever
                             //}
                             //bool skipResolve = false;
                             //float stepHeight = 2;// sphereVolume.Radius * 2;
-                            //if (i >= player.bodyc - 2) //bottom
+                            //if (i >= bodyc - 2) //bottom
                             //{
                             //    Vector3 contact = sphereVolume.Center +
                             //        sphereSurfaceNormal * (sphereVolume.Radius - penetration);
@@ -3439,7 +3763,7 @@ namespace MknGames.FPSWahtever
                     //}
                 }
                 //update player pickup gun, player hit gun
-                if (game1.kclick(Keys.X) && myGuns.Count < player.myGunLimit)
+                if (game1.kclick(Keys.X) && myGuns.Count < myGunLimit)
                 {
                     for (int j = 0; j < allguns.Count; ++j)
                     {
@@ -3541,8 +3865,8 @@ namespace MknGames.FPSWahtever
                 //    }
                 //}
             }
-            player.bodyc -= bodyshots;
-            if (player.bodyc < 1) player.bodyc = 1;
+            bodyc -= bodyshots;
+            if (bodyc < 1) bodyc = 1;
             // update player on collide
             //if (!wasInContact && playerMakingContact)
             //if (playerMakingContact)
@@ -4049,7 +4373,7 @@ namespace MknGames.FPSWahtever
                             FrequencyEnd = 550,
                             SweepLengthSecs = time
                         };
-                        soundSystem.AddMixerInput(noise.ToMono().Take(TimeSpan.FromSeconds(time)), "bullet hitting target", tt + 3);
+                        AddMixerInput(noise.ToMono().Take(TimeSpan.FromSeconds(time)), "bullet hitting target", tt + 3);
                         //targets[minTarget].phy.vel = -minContactData.norm;
                         float hity = 0;// targetRestY;
                         float restY = targetRestY;
@@ -4152,7 +4476,7 @@ namespace MknGames.FPSWahtever
                         var noise = new SignalGenerator() { Type = SignalGeneratorType.Sin, Frequency = 550 };
                         //var pitch = new SmbPitchShiftingSampleProvider(noise);
                         //pitch.PitchFactor = 1.01f;// 1 + game1.randf(-.1f,.1f);
-                        Vector3 toCam = bul.phy.pos - player.playerCam.pos;
+                        Vector3 toCam = bul.phy.pos - playerCam.pos;
                         float range = 20;
                         float rangesq = range * range;
                         float minVol = 0.1f;
@@ -4160,7 +4484,7 @@ namespace MknGames.FPSWahtever
                         float proximity = MathHelper.Clamp((rangesq - toCam.LengthSquared()) / rangesq, 0, 1);
                         float volumeValue = (maxVol - minVol) * proximity + minVol;
                         var volume = new VolumeSampleProvider(noise) { Volume = volumeValue };
-                        soundSystem.AddMixerInput(volume.ToMono().Take(TimeSpan.FromSeconds(0.01f)), "bullet hitting box", tt + 3);
+                        AddMixerInput(volume.ToMono().Take(TimeSpan.FromSeconds(0.01f)), "bullet hitting box", tt + 3);
                         //minBoxHit.GetMaterialProperties(out friction, out velocityCofactor, out doPositionCorrect);
                         //if(minBoxHit.type == BoxType.STICK)
                         //{
@@ -4238,7 +4562,7 @@ namespace MknGames.FPSWahtever
             {
                 bool travelComplete = false;
                 float delta = et * 15;
-                Vector3 targetPosition = player.playerCam.pos + camForwardFlat;
+                Vector3 targetPosition = playerCam.pos + camForwardFlat;
                 if (retractorTarget is Target)
                     travelComplete = travel(ref (retractorTarget as Target).Center, targetPosition, delta);
                 if (retractorTarget is Gun)
@@ -4253,7 +4577,7 @@ namespace MknGames.FPSWahtever
             {
                 Target T = targets[i];
                 //if player is near then flee
-                Vector3 v = player.bodyState.pos - T.Center; //to player
+                Vector3 v = bodyState.pos - T.Center; //to player
                 float l2 = v.LengthSquared();
                 float r = 5; //radius
                 if (l2 < r * r)
@@ -4405,8 +4729,8 @@ namespace MknGames.FPSWahtever
                 //    }
                 //}
             }
-            Vector3 captureCenter = coordToWorld(new Point(terrain.GetLength(0) / 2, terrain.GetLength(1) / 2), player.dropValue / 2);
-            float separation = player.dropValue * 1.5f;
+            Vector3 captureCenter = coordToWorld(new Point(terrain.GetLength(0) / 2, terrain.GetLength(1) / 2), dropValue / 2);
+            float separation = dropValue * 1.5f;
             for (int i = 0; i < capturedTargets.Count; ++i)
             {
                 int y = (targets.Length - 1) - i;
@@ -4963,26 +5287,25 @@ namespace MknGames.FPSWahtever
             //targets[targets.Length - 1].Center = zombies[0].pos;
 
             //update camera position
-            CameraState playerCam = player.playerCam;
-            if ((!editor.edit.active || !editor.editOutOfBody) && !playOutOfBody)
+            if ((!edit.active || !editOutOfBody) && !playOutOfBody)
             {
-                playerCam.pos = top + player.drop / 2;
+                playerCam.pos = top + drop / 2;
                 //3rd person
-                if (player.is3rdPerson)
+                if (is3rdPerson)
                 {
                     playerCam.pos -= camForward * 4;
                 }
             }
             playerCam.Update(gameTime, GraphicsDevice.Viewport);
-            player.untransformedProjection = playerCam.GetProjection(playerCam.fov_max, GraphicsDevice.Viewport.AspectRatio);
-            Vector2 gvMutable = player.gv;
-            if (player.playerLeftHandy)
+            untransformedProjection = playerCam.GetProjection(playerCam.fov_max, GraphicsDevice.Viewport.AspectRatio);
+            Vector2 gvMutable = gv;
+            if (playerLeftHandy)
                 gvMutable = Vector2.One - gvMutable;
             Vector3 preTransformFar = CameraState.ScreenToWorld(
                 gvMutable * ViewBounds.Size.ToVector2(),
                 1,
                 GraphicsDevice.Viewport,
-                playerCam.view * player.untransformedProjection);
+                playerCam.view * untransformedProjection);
             if (!gameMouseLocked && aimDownSight)
             {
 
@@ -5009,7 +5332,7 @@ namespace MknGames.FPSWahtever
                 }
             }
 #endif
-            if (!editor.edit.active)
+            if (!edit.active)
             {
                 float attackDelta = 0.05f;
                 float freqDelta = 5;
@@ -5060,7 +5383,8 @@ namespace MknGames.FPSWahtever
                 }
                 if (game1.kclick(Keys.F4))
                 {
-                    soundSystem.ToggleSound(!soundSystem.enableSound);
+                    enableSound = !enableSound;
+                    mixerVolume.Volume = enableSound ? 1 : 0;
                 }
             }
 
@@ -5074,7 +5398,7 @@ namespace MknGames.FPSWahtever
             //}
             aimDownSight = false;
             if (game1.IsActive &&
-                game1.mouseCurrent.RightButton == ButtonState.Pressed && !editor.edit.active)
+                game1.mouseCurrent.RightButton == ButtonState.Pressed && !edit.active)
             {
                 aimDownSight = true;
             }
@@ -5103,7 +5427,7 @@ namespace MknGames.FPSWahtever
             //        //    1,
             //        //    GraphicsDevice.Viewport);
             //        Vector3 far = preTransformFar;
-            //        currentGun.pos = top + drop * 0.9f + camForward * 0.25f + camRight * 0.1f;// bodyState.pos + Vector3.Up * (player.dropValue*(float)(player.bodyc/2-0.25f));// bodyState.pos;
+            //        currentGun.pos = top + drop * 0.9f + camForward * 0.25f + camRight * 0.1f;// bodyState.pos + Vector3.Up * (dropValue*(float)(bodyc/2-0.25f));// bodyState.pos;
             //        Vector3 gff = far - currentGun.pos;
             //        gff.Normalize();
             //        ////game1.add3DLine(currentGun.pos, currentGun.pos + gff * 10, Color.Red);
@@ -5121,7 +5445,7 @@ namespace MknGames.FPSWahtever
             //        {
             //            gunPosition = currentGun.pos,
             //            gunRotation = currentGun.rot,
-            //            shooting = player.localInput.shoot
+            //            shooting = localInput.shoot
             //        };
             //    }
             //    if(game1.kclick(Keys.Tab))
@@ -5160,9 +5484,9 @@ namespace MknGames.FPSWahtever
                 //{
                 //}
                 //}
-                switch (player.playerGunHolsterFormation)
+                switch (playerGunHolsterFormation)
                 {
-                    case Player.playerHolsterOcto:
+                    case playerHolsterOcto:
                         {
                             float f = (float)i;
                             float step = MathHelper.TwoPi / myGuns.Count;
@@ -5181,7 +5505,7 @@ namespace MknGames.FPSWahtever
 
                         }
                         break;
-                    case Player.playerHolsterAdventurer:
+                    case playerHolsterAdventurer:
                         {
                             if (G == currentGun)
                             {
@@ -5190,7 +5514,7 @@ namespace MknGames.FPSWahtever
                             else
                             {
                                 G.rot = Matrix.CreateRotationX(MathHelper.PiOver2) * Matrix.CreateRotationY(playerCam.Euler.Y);
-                                G.pos = player.bodyState.pos - camForwardFlat * (G.size.X * (float)altGunCounter + player.dropValue / 2);
+                                G.pos = bodyState.pos - camForwardFlat * (G.size.X * (float)altGunCounter + dropValue / 2);
                             }
                         }
                         break;
@@ -5233,7 +5557,7 @@ namespace MknGames.FPSWahtever
             //}
             //Vector3 camRight = Vector3.Cross(camForward, Vector3.Up);
             Vector3 camUp = Vector3.Cross(camRight, camForward);
-            //Vector3 meleeBulletOffset = -camRight * (player.dropValue / 2 + meleeBullet.size/2);
+            //Vector3 meleeBulletOffset = -camRight * (dropValue / 2 + meleeBullet.size/2);
             //if (meleeing)
             //{
             //    meleeTime += et;
@@ -5252,7 +5576,7 @@ namespace MknGames.FPSWahtever
             //update dialog
 
             //update edit state
-            editor.Update(GraphicsDevice, game1, player.bodyState, player.playerCam, player.drop, player.dropValue);
+            editupdate();
 
             //update network outgoing
             //if (game1.kdown(Keys.F1)) //PING/CONNECT
@@ -5269,7 +5593,7 @@ namespace MknGames.FPSWahtever
             //Byte[] sendBytes = Encoding.ASCII.GetBytes(string.Format("p {0} {1} {2}",
             //    csv_writev3(bodyState.pos),
             //    csv_writev3(playerCam.Euler),
-            //    csv_writeFPSInput(player.localInput)));
+            //    csv_writeFPSInput(localInput)));
             //for (int i = 0; i < networkplayerdata.Keys.Count; ++i)
             //{
             //    NetworkPlayer p = networkplayerdata.ElementAt(i).Value;
@@ -5284,13 +5608,1002 @@ namespace MknGames.FPSWahtever
         }//END UPDATE
 
         //edit update
+        void editupdate()
+        {
+            bool controlDown = game1.kdown(Keys.LeftControl) ||
+                game1.kdown(Keys.RightControl);
+            bool shiftDown =
+                game1.kdown(Keys.LeftShift) ||
+                game1.kdown(Keys.RightShift);
+            bool modifierDown = controlDown || shiftDown;
+
+            // edit form
+            if(game1.kclick(Keys.F8))
+            {
+                OpenVariableEditor();
+            }
+
+            if (!game1.IsActive)
+                return;
+            if (game1.kclick(Keys.E))
+            {
+                edit.active = !edit.active;
+                if (controlDown)
+                {
+                    bodyState.pos = playerCam.pos - drop;
+                }
+            }
+            if (!edit.active) return;
+
+            //edit pre-edit save
+            if (levelUnedited)
+            {
+                string preEditCopyFilename = "most-recent-backup.txt";
+                SaveLevel(preEditCopyFilename);
+                levelUnedited = false;
+            }
+
+            //edit autosave
+            bool wantAutoSave = false;
+            string autoSaveFilename = "autosave-" + currentLevelFilename;
+            if (!File.Exists(autoSaveFilename))
+            {
+                wantAutoSave = true;
+            }
+            else
+            {
+                var lastSave = File.GetLastWriteTime(autoSaveFilename);
+                var elapsed = DateTime.Now - lastSave;
+                if (elapsed.TotalMinutes > 5)
+                {
+                    wantAutoSave = true;
+                }
+            }
+            if (wantAutoSave && File.Exists(currentLevelFilename))
+            {
+                SaveLevel(autoSaveFilename);
+            }
+
+            //edit ui
+            // update mouse hit box
+
+            //edit brush
+            //toggle brush
+            if (game1.kclick(Keys.B))
+            {
+                editUseSelectionBrush = !editUseSelectionBrush;
+            }
+
+            //edit update mouse lock
+            if (game1.kclick(Keys.Tab))
+            {
+                editMouseLocked = !editMouseLocked;
+            }
+
+            Ray mouseray = playerCam.ScreenToRay(game1.mouseCurrent.Position.ToVector2(), GraphicsDevice.Viewport);
+            float minboxhit = float.MaxValue;
+
+            // edit hover
+            edit.hoverbox0 = edit.hoverbox;
+            edit.hoverbox = null;
+            edit.hoverTarget = -1;
+            editHoverGun = null;
+            if (mouseUi.HasValue == false)
+            {
+                //TODO: speedup getZone(ray) to make this faster
+                //hover box
+                foreach (Box box in allBoxes)
+                {
+                    //if (box.isnew)
+                    //{
+                    //    box.isnew = false;
+                    //    box.position0 = box.position;
+                    //}
+                    BoundingBox boxVolume = box.boundingBox;
+                    {
+                        float? hit = mouseray.Intersects(boxVolume);
+                        if (hit.HasValue && hit.Value < minboxhit && hit.Value > 0)
+                        {
+                            edit.hoverbox = box;
+                            minboxhit = hit.Value;
+                            Vector3 contact = mouseray.Position + mouseray.Direction * hit.Value;
+                            float pen = 0;
+                            Vector3 normal;
+                            intersectBoxPoint(contact, boxVolume, out normal, out pen);
+                            edit.hoverboxContact = contact;
+                            edit.hoverboxNormal = normal;
+                        }
+                    }
+                    //Func<Vector3, Point> gp = (Vector3 pos) =>
+                    //{
+                    //    return new Point(
+                    //    (int)(pos.X / box.size.X),
+                    //    (int)(pos.X / box.size.Z)
+                    //    );
+                    //};
+                    //for (int b = 0; b < grenadebullets.Length; ++b)
+                    //{
+                    //    if (gameTime.TotalGameTime.TotalSeconds % 0.1f > et)
+                    //        continue;
+                    //    Bullet B = grenadebullets[b];
+                    //    resolveDir = Vector3.Zero;
+                    //    BoundingSphere bulletSV2 = new BoundingSphere(grenadebullets[b].p.pos, 0.1f);
+                    //    if (gp(B.p.pos) == gp(box.position))// Vector3.Distance(B.p.pos, box.position) < box.size.Length() / 100)
+                    //    {
+                    //        resolveCollision(ref grenadebullets[b].p, bulletSV2, boxVolume);
+                    //    }
+                    //resolveDirs[b] += resolveDir;
+                    //}
+                    //if(box.isdoor)
+                    //{
+                    //    BoundingBox bb = Game1.MakeBox(box.position0, box.size + new Vector3(0, 0, 10));
+                    //    box.color = monochrome(0.5f);
+                    //    float targY = box.position0.Y;
+                    //    if (bb.Contains(bodyState.pos) == ContainmentType.Contains)
+                    //    {
+                    //        targY = box.position0.Y - box.size.Y + 0.01f;
+                    //    }
+                    //    box.position.Y = MathHelper.Lerp(box.position.Y, targY, 0.1f);
+                    //}
+                }
+                //hover target
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    //float? hit = mouseray.Intersects(targets[i]);
+                    BoundingSphere bs = new BoundingSphere(targets[i].Center, targets[i].Radius);
+                    float? hit = mouseray.Intersects(bs);
+                    if (hit.HasValue && hit.Value > 0 && hit.Value < minboxhit)
+                    {
+                        Vector3 contact = mouseray.Position + mouseray.Direction;
+                        Vector3 toContact = contact - targets[i].Center;
+                        float len = toContact.Length();
+                        if (len > 0)
+                        {
+                            minboxhit = hit.Value;
+                            edit.hoverbox = null;
+                            edit.hoverTarget = i;
+                            edit.hoverboxNormal = toContact / len;
+                            edit.hoverboxContact = contact;
+                        }
+                    }
+                }
+                //hover gun
+                for (int i = 0; i < allguns.Count; ++i)
+                {
+                    ///gun
+                    float? hit = IntersectRayGun(mouseray, allguns[i]);
+                    if (hit.HasValue && hit.Value > 0 && hit.Value < minboxhit)
+                    {
+                        minboxhit = hit.Value;
+                        edit.hoverbox = null;
+                        edit.hoverTarget = -1;
+                        editHoverGun = allguns[i];
+                    }
+                }
+            }
+
+            if (game1.kclick(Keys.O))
+            {
+                editOutOfBody = !editOutOfBody;
+            }
+
+            //enter text mode
+            game1.BeginUnrestrictedInput();
+            if (game1.kclick(Keys.OemTilde) && !game1.restrictedInput)
+            {
+                //filename = "";
+                RequestText(levelFileTxt);
+            }
+            game1.EndUnrestrictedInput();
+
+            //edit selection
+            bool ldown = game1.mouseCurrent.LeftButton == ButtonState.Pressed;
+            bool ltap = ldown && game1.mouseOld.LeftButton == ButtonState.Released;
+            if (ldown && !mouseUi.HasValue)// && clipboardBoxes.Count == 0)
+            {
+                if (edit.hoverbox != null)
+                {
+                    List<Box> selectionBoxes = new List<Box>();
+                    selectionBoxes.Add(edit.hoverbox);
+                    if (editUseSelectionBrush)
+                    {
+                        BoundingSphere cursor3d = new BoundingSphere(edit.hoverboxContact, editSelectionBrushRadius);
+                        Rectangle cursorZone = getzone(cursor3d);
+                        List<Box> nearbyBoxes = getBoxesInZone(cursorZone);
+                        foreach (Box b in nearbyBoxes)
+                        {
+                            if (b.boundingBox.Intersects(cursor3d))
+                            {
+                                selectionBoxes.Add(b);
+                            }
+                        }
+                    }
+                    if (!shiftDown && ltap)
+                    {
+                        edit.boxes.Clear();
+                        //edit.boxes.Add(edit.hoverbox);
+                        foreach (Box b in selectionBoxes)
+                        {
+                            if (!edit.boxes.Contains(b))
+                                edit.boxes.Add(b);
+                        }
+                        edit.target = -1;
+                        editGun = null;
+                    }
+                    if (shiftDown)
+                    {
+                        //if the selection is fresh we can find out if the following
+                        //selections should be inclusive or exclusive
+                        if (ltap)
+                        {
+                            if (edit.boxes.Contains(edit.hoverbox))
+                                editMultiSelectInclusively = false;
+                            else
+                                editMultiSelectInclusively = true;
+
+                        }
+                        if (edit.hoverbox != edit.hoverbox0 || ltap)
+                        {
+                            //if (!editMultiSelectInclusively && edit.boxes.Contains(edit.hoverbox))
+                            //{
+                            //    edit.boxes.Remove(edit.hoverbox);
+                            //}
+                            //if (editMultiSelectInclusively && !edit.boxes.Contains(edit.hoverbox))
+                            //{
+                            //    edit.boxes.Add(edit.hoverbox);
+                            //}
+                            foreach (Box b in selectionBoxes)
+                            {
+                                if (!editMultiSelectInclusively && edit.boxes.Contains(b))
+                                {
+                                    edit.boxes.Remove(b);
+                                }
+                                if (editMultiSelectInclusively && !edit.boxes.Contains(b))
+                                {
+                                    edit.boxes.Add(b);
+                                }
+                            }
+                            edit.target = -1;
+                            editGun = null;
+                        }
+                    }
+                }
+                if (edit.hoverTarget > -1)
+                {
+                    if (!shiftDown)
+                    {
+                        edit.boxes.Clear();
+                        editGun = null;
+                    }
+                    edit.target = edit.hoverTarget;
+                }
+                if (editHoverGun != null)
+                {
+                    if (!shiftDown)
+                    {
+                        edit.boxes.Clear();
+                        edit.target = -1;
+                    }
+                    editGun = editHoverGun;
+                    gunFiletxt = new Textbox((string text) => { editGun.filename = text; },
+                        () => { return editGun.filename; });
+                }
+            }
+
+            //edit deselect
+            if (game1.rmouse && !game1.rmouseOld)
+            {
+                //if (clipboardBoxes.Count > 0)
+                //{
+                //    clipboardBoxes.Clear();
+                //}
+                //else
+                //{
+                edit.boxes.Clear();
+                edit.target = -1;
+                editGun = null;
+                //}
+            }
+
+            //edit spawn rotation
+            {
+                float rotateStepAngle = MathHelper.PiOver4 / 16;
+                Vector3 start = playerSpawnEuler;
+                if (game1.kclickheld(Keys.OemPlus))
+                    playerSpawnEuler.Y -= rotateStepAngle;
+                if (game1.kclickheld(Keys.OemMinus))
+                    playerSpawnEuler.Y += rotateStepAngle;
+                if (start != playerSpawnEuler)
+                {
+                    edit.saveNeeded = true;
+                }
+            }
+
+            if (edit.hoverbox != null && !modifierDown)
+            {
+                Vector3 boxTop = edit.hoverbox.position +
+                    Vector3.Up * (edit.hoverbox.size.Y / 2);
+                // edit player, edit spawn point
+                if (game1.kdown(Keys.D0))
+                {
+                    playerSpawnPoint = boxTop +
+                    Vector3.Up * (height / 2);
+                }
+                // edit add box
+                if (game1.kclick(Keys.N))
+                {
+                    Box newBox = new Box(Vector3.One, edit.hoverboxContact + edit.hoverboxNormal * 0.5f);
+                    newBox.color = monochrome(0.9f);
+                    AddBox(newBox);
+                }
+                //edit place target, edit add target
+                if (game1.kclick(Keys.T))
+                {
+                    AddTarget(snap(edit.hoverboxContact + Vector3.Up * dropValue / 2), dropValue / 2);
+                }
+                //edit add gun, edit new gun, edit place gun
+                if (game1.kclick(Keys.G))
+                {
+                    Gun gun = new Gun();
+                    gun.pos = edit.hoverboxContact + Vector3.Up * gun.size.Y / 2 + edit.hoverboxNormal;
+                    //gun.AddBullets(allbullets);
+                    //allguns.Add(gun);
+                    AddGun(gun);
+                }
+                //edit add bullet
+                if (game1.kclick(Keys.M))
+                {
+                    Bullet bullet = new Bullet();
+                    bullet.lifeSpan = 3;
+                    bullet.off = true;
+                    bullet.phy.pos = edit.hoverboxContact + Vector3.Up * bullet.size / 2;
+                    allbullets.Add(bullet);
+                }
+            }
+
+            //edit draw box normal, edit draw gizmo
+            game1.add3DLine(edit.hoverboxContact + edit.hoverboxNormal, edit.hoverboxContact + edit.hoverboxNormal * 2, Color.Purple);
+            game1.add3DLine(edit.hoverboxContact, edit.hoverboxContact + Vector3.Right, Color.Red);
+            game1.add3DLine(edit.hoverboxContact, edit.hoverboxContact + Vector3.Left, Color.Red);
+            game1.add3DLine(edit.hoverboxContact, edit.hoverboxContact + Vector3.Up, Color.Green);
+            game1.add3DLine(edit.hoverboxContact, edit.hoverboxContact + Vector3.Down, Color.Green);
+            game1.add3DLine(edit.hoverboxContact, edit.hoverboxContact + Vector3.Forward, Color.Blue);
+            game1.add3DLine(edit.hoverboxContact, edit.hoverboxContact + Vector3.Backward, Color.Blue);
+
+            //edit transformation, edit translate, edit scale
+            Vector3 transformation = Vector3.Zero;
+            Vector3 translationTransform = Vector3.Zero;
+            Vector3 rotationTransformation = Vector3.Zero;
+            bool transformationIsTranslation = false;
+            {
+                transformationIsTranslation = !controlDown;
+                Vector3 change = Vector3.Zero;
+                if (game1.kclickheld(Keys.Left))
+                {
+                    change.X--;
+                }
+                if (game1.kclickheld(Keys.Right))
+                {
+                    change.X++;
+                }
+                if (game1.kclickheld(Keys.Up))
+                {
+                    change.Z++;
+                }
+                if (game1.kclickheld(Keys.Down))
+                {
+                    change.Z--;
+                }
+                float scroll = game1.mouseCurrent.ScrollWheelValue - game1.mouseOld.ScrollWheelValue;
+                if (scroll != 0)
+                {
+                    change.Y += (scroll / 120);
+                }
+                if (change.LengthSquared() > 0)
+                {
+                    //float horizontalAmt = widthm;
+                    //float lateralAmt = depthm;
+                    //float verticalAmt = 1;
+                    //Vector3 changeScale = new Vector3(horizontalAmt, verticalAmt, lateralAmt);
+                    Vector3 changeScale = new Vector3(editSnapSize * 2 * 2 * 2);
+                    if (shiftDown)
+                        changeScale /= 2;
+                    transformation = change * changeScale / 2;
+                    transformation = snap(transformation);
+                    translationTransform = snap(transformation / 2);
+                    float rotationSnap = MathHelper.ToRadians(15); //45
+                    float rotationScale = rotationSnap * 2;
+                    rotationTransformation = change * rotationScale;
+                    if (shiftDown)
+                        rotationTransformation /= 2;
+                    rotationTransformation = snap(rotationTransformation, rotationSnap);
+                }
+            }
+
+            //edit boxes
+            bool deleteClick = game1.kclick(Keys.Back);
+            if (edit.boxes.Count > 0)
+            {
+                //edit scale, edit translate, edit move
+                if (transformation.LengthSquared() > 0)
+                {
+                    foreach (Box b in edit.boxes)
+                    {
+                        if (transformationIsTranslation)
+                        {
+                            b.position += translationTransform;
+                            b.position = snap(b.position, editSnapSize);
+                        }
+                        else
+                        {
+                            b.size += transformation;
+                            b.size = snap(b.size, editSnapSize * 2);
+                        }
+                        //if (change.X != 0 || change.Z != 0)
+                        RefreshBox(b);
+                    }
+                }
+                if (game1.kclick(Keys.OemQuestion))
+                    editBoxesRequestFocus = true;
+                if(editOutOfBody && editBoxesRequestFocus)
+                {
+                    editBoxesRequestFocus = false;
+                    playerCam.pos = edit.boxes[0].position;
+                }
+
+                // edit split, edit subdivide
+                if (game1.kclick(Keys.J))
+                {
+                    editBoxesRequestSubdivide = true;
+                }
+                    if(editBoxesRequestSubdivide)
+                {
+                    editBoxesRequestSubdivide = false;
+                    for (int b = 0; b < edit.boxes.Count; ++b)
+                    {
+                        Box B = edit.boxes[b];
+                        Vector3 quarterSize = B.size / 2;
+                        quarterSize.Y = B.size.Y;
+                        Vector3 planarOffset = quarterSize / 2;
+                        planarOffset.Y = 0;
+                        Vector3 up = Vector3.Up;
+                        Vector3 forward = GameMG.Abs(edit.hoverboxNormal);
+                        if (forward.Y != 0)
+                            up = Vector3.Right;
+                        Vector3 right = GameMG.Abs(Vector3.Cross(up, forward));
+                        quarterSize = B.size * (up + right) / 2;
+                        planarOffset = quarterSize / 2;
+                        quarterSize += B.size * forward;
+                        Box n0 = AddBox(B.position - planarOffset, quarterSize, B.color);
+                        Box n1 = AddBox(B.position + planarOffset, quarterSize, B.color);
+                        Box n2 = AddBox(B.position - planarOffset + planarOffset * right * 2, quarterSize, B.color);
+                        Box n3 = AddBox(B.position - planarOffset + planarOffset * up * 2, quarterSize, B.color);
+                        //n0.type = n1.type = n2.type = n3.type = B.type;
+                        //n0.embedsBulletOnImpact = 
+                        //    n1.embedsBulletOnImpact = 
+                        //    n2.embedsBulletOnImpact = 
+                        //    n3.embedsBulletOnImpact =
+                        //    B.embedsBulletOnImpact;
+                        edit.boxes.RemoveAt(b);
+                        RemoveBox(B);
+                        edit.boxes.Insert(b, n0);
+                        edit.boxes.Insert(b, n1);
+                        edit.boxes.Insert(b, n2);
+                        edit.boxes.Insert(b, n3);
+                        b += 3;
+                    }
+                }
+
+                //edit join/subtract boxes
+                //if (game1.kclick(Keys.L))
+                //{
+                //    if(shiftDown)
+                //        editBoxes
+                //}
+                //if (editBoxesRequestJoin || editBoxesRequestSubtract)
+                if (game1.kclick(Keys.L))
+                {
+                    if (shiftDown)
+                    {
+                        if (edit.boxes.Count > 1)
+                        {
+                            List<BoundingBox> exteriorBoxes = new List<BoundingBox>();
+                            Box targetBox = edit.boxes.Last();
+                            exteriorBoxes.Add(targetBox.boundingBox);
+                            foreach (Box chisel in edit.boxes)
+                            {
+                                if (chisel == targetBox)
+                                    continue;
+                                List<BoundingBox> positiveBoxes = new List<BoundingBox>();
+                                foreach (BoundingBox initialBox in exteriorBoxes)
+                                {
+                                    BoundingBox editBox = initialBox;
+                                    if (editBox.Intersects(chisel.boundingBox) == false)
+                                    {
+                                        positiveBoxes.Add(editBox);
+                                        continue;
+                                    }
+                                    //clip box on each axis
+                                    for (int i = 0; i < 6; ++i)
+                                    {
+                                        int side = -1;
+                                        if (i < 2)
+                                            side = 0;
+                                        else if (i < 4)
+                                            side = 1;
+                                        else if (i < 6)
+                                            side = 2;
+                                        float direction = 1;
+                                        if (i % 2 == 1)
+                                            direction = -1;
+                                        Vector3 chiselReference = chisel.position + chisel.size / 2 * direction;
+                                        float d = GetVectorComponent(chiselReference, side);
+                                        float min = GetVectorComponent(editBox.Min, side);
+                                        float max = GetVectorComponent(editBox.Max, side);
+                                        float sidemin = (min - d) * direction;
+                                        float sidemax = (max - d) * direction;
+                                        if (sidemin < 0 == sidemax < 0) //same sides of the plane
+                                        {
+                                            if (sidemin > 0 || sidemax > 0) //box is totally exterior on this axis
+                                            {
+                                                positiveBoxes.Add(editBox);
+                                            }
+                                        }
+                                        else if (sidemin < 0 != sidemax < 0) //opposite sides of the plane
+                                        {
+                                            BoundingBox minBox = new BoundingBox(editBox.Min, editBox.Max);
+                                            SetVectorComponent(ref minBox.Max, side, d);
+                                            BoundingBox maxBox = new BoundingBox(editBox.Min, editBox.Max);
+                                            SetVectorComponent(ref maxBox.Min, side, d);
+                                            if (sidemin > 0)
+                                            {
+                                                positiveBoxes.Add(minBox);
+                                                editBox = maxBox;
+                                            }
+                                            else if (sidemax > 0)
+                                            {
+                                                positiveBoxes.Add(maxBox);
+                                                editBox = minBox;
+                                            }
+                                        }
+                                    } //end for i
+                                    //edit box now models the interior space of the initial box and will be left behind
+                                } //end foreach chisel
+                                // positive boxes should now model the exterior space entirely
+                                exteriorBoxes.Clear();
+                                exteriorBoxes.AddRange(positiveBoxes);
+                                //discard this box
+                                if (!controlDown)
+                                    RemoveBox(chisel);
+                            }
+                            //at this point exterior boxes should model the entire exterior space
+                            edit.boxes.Clear();
+                            for (int i = 0; i < exteriorBoxes.Count; ++i)
+                            {
+                                BoundingBox incomingBox = exteriorBoxes[i];
+                                Vector3 size = incomingBox.Max - incomingBox.Min;
+                                Vector3 position = incomingBox.Min + size / 2;
+                                if (size.LengthSquared() == 0)
+                                {
+                                    throw new Exception("Zero box created from subtraction!!");
+                                }
+                                Box newBox = AddBox(position, size, targetBox.color);
+                                edit.boxes.Add(newBox);
+                            }
+                            RemoveBox(targetBox);
+                        }
+                    }
+                    else
+                    {
+                        Vector3 min = Vector3.Zero, max = Vector3.Zero;
+                        bool init = false;
+                        foreach (Box b in edit.boxes)
+                        {
+                            if (!init)
+                            {
+                                min = b.boundingBox.Min;
+                                max = b.boundingBox.Max;
+                                init = true;
+                            }
+                            else
+                            {
+                                min = Vector3.Min(b.boundingBox.Min, min);
+                                max = Vector3.Max(b.boundingBox.Max, max);
+                            }
+                        }
+                        if (init)
+                        {
+                            Box box = new Box(edit.boxes[0]);
+                            box.size = max - min;
+                            box.position = min + box.size / 2;
+                            for (int i = 0; i < edit.boxes.Count; ++i)
+                            {
+                                RemoveBox(edit.boxes[i]);
+                            }
+                            edit.boxes.Clear();
+                            AddBox(box);
+                            edit.boxes.Add(box);
+                        }
+                    }
+                }
+
+                //edit hollow
+                if (game1.kclick(Keys.OemSemicolon))
+                {
+                    List<Box> boxesToAdd = new List<Box>();
+                    for (int i = 0; i < edit.boxes.Count; ++i)
+                    {
+                        Box B = edit.boxes[i];
+                        Box left = new Box(new Vector3(editSnapSize * 2, B.size.Y, B.size.Z),
+                            new Vector3(B.boundingBox.Min.X + editSnapSize, B.position.Y, B.position.Z));
+                        Box right = new Box(new Vector3(editSnapSize * 2, B.size.Y, B.size.Z),
+                            new Vector3(B.boundingBox.Max.X - editSnapSize, B.position.Y, B.position.Z));
+                        Box top = new Box(new Vector3(B.size.X, editSnapSize * 2, B.size.Z),
+                            new Vector3(B.position.X, B.boundingBox.Max.Y - editSnapSize, B.position.Z));
+                        Box bottom = new Box(new Vector3(B.size.X, editSnapSize * 2, B.size.Z),
+                            new Vector3(B.position.X, B.boundingBox.Min.Y + editSnapSize, B.position.Z));
+                        Box forward = new Box(new Vector3(B.size.X, B.size.Y, editSnapSize * 2),
+                            new Vector3(B.position.X, B.position.Y, B.boundingBox.Min.Z + editSnapSize));
+                        Box back = new Box(new Vector3(B.size.X, B.size.Y, editSnapSize * 2),
+                            new Vector3(B.position.X, B.position.Y, B.boundingBox.Max.Z - editSnapSize));
+                        left.color = right.color = top.color = bottom.color = forward.color = back.color = B.color;
+                        AddBox(left);
+                        AddBox(right);
+                        AddBox(top);
+                        AddBox(bottom);
+                        AddBox(forward);
+                        AddBox(back);
+                        RemoveBox(B);
+                        boxesToAdd.Add(left);
+                        boxesToAdd.Add(right);
+                        boxesToAdd.Add(top);
+                        boxesToAdd.Add(bottom);
+                        boxesToAdd.Add(forward);
+                        boxesToAdd.Add(back);
+                    }
+                    edit.boxes.Clear();
+                    foreach (Box b in boxesToAdd)
+                    {
+                        edit.boxes.Add(b);
+                    }
+                }
+
+                //edit duplicate
+                if (game1.kclick(Keys.V) && !controlDown)
+                {
+                    List<Box> newBoxes = new List<Box>();
+                    foreach (Box b in edit.boxes)
+                    {
+                        Box newBox = new Box(b);
+                        newBox.position += edit.hoverboxNormal * b.size;
+                        AddBox(newBox);
+                        newBoxes.Add(newBox);
+                    }
+                    edit.boxes = newBoxes;
+                }
+
+                //edit delete
+                if (deleteClick)
+                {
+                    for (int i = 0; i < edit.boxes.Count; ++i)
+                    {
+                        RemoveBox(edit.boxes[i]);
+                        edit.boxes.RemoveAt(i--);
+                    }
+                }
+
+                //edit copy
+                //if(game1.kclick(Keys.C) && controlDown && edit.boxes.Count > 0)
+                //{
+                //    clipboardBoxes.Clear();
+                //    bool containerEdited = false;
+                //    Vector3 min = Vector3.Zero;
+                //    Vector3 max = Vector3.Zero;
+                //    foreach (Box box in edit.boxes)
+                //    {
+                //        clipboardBoxes.Add(new Box(box));
+                //        if (!containerEdited)
+                //        {
+                //            min = box.boundingBox.Min;
+                //            max = box.boundingBox.Max;
+                //            containerEdited = true;
+                //        }
+                //        else
+                //        {
+                //            min = Vector3.Min(min, box.boundingBox.Min);
+                //            max = Vector3.Max(max, box.boundingBox.Max);
+                //        }
+                //    }
+                //    clipboardBoxContainerSize = max - min;
+                //    Vector3 center = min + clipboardBoxContainerSize / 2;
+                //    clipboardBoxOffsets = new Vector3[clipboardBoxes.Count];
+                //    for(int i = 0; i < clipboardBoxes.Count; ++i)
+                //    {
+                //        Box box = clipboardBoxes[i];
+                //        clipboardBoxOffsets[i] = box.position - center;
+                //    }
+                //    edit.boxes.Clear();
+                //}
+
+                //edit color
+                if (game1.kclick(Keys.U))
+                {
+                    foreach (Box b in edit.boxes)
+                    {
+                        b.color = monochrome(1.0f, 0.25f);
+                    }
+                }
+                if (game1.kclick(Keys.Y))
+                {
+                    foreach (Box b in edit.boxes)
+                    {
+                        b.color = monochrome(1.0f, 1.00f);
+                    }
+                }
+            }
+
+            //edit clipboard
+            //if (clipboardBoxes.Count > 0)
+            //{
+            //    //edit clipboard position
+            //    float axisOffset = Math.Abs(Vector3.Dot(clipboardBoxContainerSize, edit.hoverboxNormal));
+            //    Vector3 axisOffsetVec = edit.hoverboxNormal * axisOffset/2;
+            //    Vector3 pivot = snap(edit.hoverboxContact + axisOffsetVec);
+            //    for (int i = 0; i < clipboardBoxes.Count;++i)
+            //    {
+            //        Box box = clipboardBoxes[i];
+            //        box.position = snap(pivot + clipboardBoxOffsets[i]);
+            //    }
+
+            //    //edit paste
+            //    if (game1.lmouse && !game1.lmouseOld && clipboardBoxes.Count > 0)
+            //    {
+            //        foreach (Box box in clipboardBoxes)
+            //        {
+            //            AddBox(new Box(box));
+            //        }
+            //        //clipboardBoxes.Clear();
+            //    }
+
+            //    //edit clipboard deselect
+            //    if(game1.rmouse && !game1.rmouseOld)
+            //    {
+            //        clipboardBoxes.Clear();
+            //    }
+            //}
+
+            //edit targets
+            if (edit.target > -1)
+            {
+                if (transformation.LengthSquared() > 0)
+                {
+                    if (transformationIsTranslation)
+                    {
+                        targets[edit.target].Center += translationTransform;
+                        targets[edit.target].Center = snap(targets[edit.target].Center);
+                        targetStarts[edit.target] = targets[edit.target].Center;
+                    }
+                    else
+                    {
+                        targets[edit.target].Radius += transformation.Y / 2;
+                        targets[edit.target].Radius = snap(targets[edit.target].Radius);
+                    }
+                    edit.saveNeeded = true;
+                }
+                //delete target
+                if (deleteClick)
+                {
+                    RemoveTargetAt(edit.target);
+                    edit.target = -1;
+                    edit.hoverTarget = -1;
+                    edit.saveNeeded = true;
+                }
+            }
+
+            //edit gun
+            if (editGun != null)
+            {
+                Gun g = editGun;
+                if (transformation.LengthSquared() > 0)
+                {
+                    if (transformationIsTranslation)
+                    {
+                        g.pos += translationTransform;
+                        g.pos = snap(g.pos);
+                    }
+                    else
+                    {
+                        g.rot *= Matrix.CreateFromYawPitchRoll(
+                            rotationTransformation.Y,
+                            rotationTransformation.X,
+                            rotationTransformation.Z);
+                    }
+                    edit.saveNeeded = true;
+                }
+                if (deleteClick)
+                {
+                    RemoveGun(g);
+                    editGun = null;
+                }
+            }
+            //if (game1.ltap)
+            //{
+            //    if (uiGunReload == uiMouseHost)
+            //    {
+            //        for (int i = 0; i < editGun.bullets.Count; ++i)
+            //        {
+            //            Bullet b = editGun.bullets[i];
+            //            b.off = true;
+            //        }
+            //    }
+            //    if(uiControlButton == uiMouseHost)
+            //    {
+            //        uiControls.minimized = !uiControls.minimized;
+            //    }
+            //}
+            //if(game1.lmouse)
+            //{
+            //    if (uiGunJoin == uiMouseHost)
+            //    {
+            //        editGun.TriggerDown(new PhysicsState(1));
+            //    }
+            //}
+
+            //edit save
+            if (game1.kclick(Keys.S) && controlDown && !shiftDown)
+            {
+                SaveLevel(currentLevelFilename);
+            }
+
+            //edit load
+            if (game1.kclick(Keys.L) && controlDown && !shiftDown)
+            {
+                loadlevel();
+            }
+
+            var keys = game1.keyCurrent.GetPressedKeys();
+            foreach (Keys k in keys)
+            {
+                //edit save level, save map, save terrain
+                if (game1.kclick(k) && (k >= Keys.D0 && k <= Keys.D9))
+                {
+                    string newFilename = string.Format("{0}.txt", (int)k);
+                    if (game1.kdown(Keys.LeftShift)) //SAVE
+                    {
+                        currentLevelFilename = newFilename;
+                        SaveLevel(currentLevelFilename);
+                    }
+                    else if (game1.kdown(Keys.LeftControl) && File.Exists(currentLevelFilename)) //LOAD
+                    {
+                        currentLevelFilename = newFilename;
+                        loadlevel();
+                    }
+                }
+
+                //edit textbox
+                if (game1.restrictedInput && currentTextbox == null)
+                {
+                    game1.restrictedInput = false;
+                }
+                if (game1.restrictedInput)
+                {
+                    game1.BeginUnrestrictedInput();
+                    string text = currentTextbox.GetText();
+                    string text0 = text;
+                    //string filename0 = filenam;e
+                    if (game1.kclickheld(k))
+                    {
+                        char c = KeyToChar(k, shiftDown);
+                        if (char.IsLetter(c) || char.IsNumber(c) || char.IsPunctuation(c))
+                        {
+                            //filename += c;
+                            text += c;
+                        }
+                        if (k == Keys.Back && text.Length > 0)
+                        {
+                            //filename = filename.Substring(0, filename.Length - 1);
+                            text = text.Substring(0, text.Length - 1);
+                        }
+                        if (k == Keys.Enter)
+                        {
+                            //edit end text, submit text
+                            game1.restrictedInput = false;
+                            currentTextbox = null;
+                        }
+                    }
+                    //if(filename0 != filename)
+                    //{
+                    //    edit.saveNeeded = true;
+                    //    if(string.IsNullOrEmpty(filename))
+                    //    {
+                    //        edit.saveNeeded = false;
+                    //    }
+                    //}
+                    if (text != text0)
+                    {
+                        currentTextbox.setText(text);
+                    }
+                    game1.EndUnrestrictedInput();
+                }
+            }
+            //end editupdate
+        }
 
         //helper audio
+        // add mixer input
+        public void AddMixerInput(ISampleProvider sampler, string closedCaption, float closedCaptionDuration)
+        {
+            mixer.AddMixerInput(sampler);
+            float targetTime = StateMachine.totalGameTime + 3;
+#if ADD_CLOSED_CAPTIONS
+            if (closedCaptions.ContainsKey(closedCaption) == false)
+                closedCaptions.Add(closedCaption, StateMachine.totalGameTime + 3);
+            else
+                closedCaptions[closedCaption] = targetTime;
+#endif
+        }
 
         //helper edit
+        public void OpenVariableEditor()
+        {
+            if (editorThread == null || editorThread.ThreadState == System.Threading.ThreadState.Stopped)
+            {
+                editorThread = new Thread(new ThreadStart(() =>
+                {
+                    editor.ShowDialog();
+                }));
+            }
+            editorThread.Start();
+        }
+        float snap(float value, float snapValue)
+        {
+            float remainder = 0;
+            float remaining = snapValue;
+            float high = snapValue;
+            float low = 0;
+            if (value > 0)
+            {
+                // positive
+                // [low, value, high]
+                // <-     snap     ->
+                // x % y = y(----)x--y
+                remainder = value % snapValue;
+                remaining = snapValue - remainder;
+                high = value + remaining;
+                low = value - remainder;
+            }
+            if (value < 0)
+            {
+                // negative
+                // [-low, -value, -high]
+                // quotient = value / -snap = +x
+                // +x % 1 = remainderPercentage
+                float q = value / -snapValue; //quotient
+                float rp = q % 1.0f; //remainder percentage
+                remainder = rp * snapValue;
+                remaining = snapValue - remainder;
+                high = value + remaining;
+                low = value - remainder;
+            }
+            if (remainder < remaining) return low;
+            else if (remaining < remainder) return high;
+            else return high;
+        }
+        float snap(float value)
+        {
+            return snap(value, editSnapSize);
+        }
+        Vector3 snap(Vector3 vector)
+        {
+            return new Vector3(snap(vector.X), snap(vector.Y), snap(vector.Z));
+        }
+        Vector3 snap(Vector3 vector, float snapValue)
+        {
+            return new Vector3(snap(vector.X, snapValue), snap(vector.Y, snapValue), snap(vector.Z, snapValue));
+        }
 
         //helper terrain
-        public List<Box> getBoxesInZone(Rectangle zone)
+        List<Box> getBoxesInZone(Rectangle zone)
         {
             List<Box> returnList = new List<Box>();
             for (int x = zone.Left; x <= zone.Right; ++x)
@@ -5313,9 +6626,9 @@ namespace MknGames.FPSWahtever
         //add box
         public void AddBox(Box newbox)
         {
-            editor.edit.saveNeeded = true;
-            newbox.position = editor.snap(newbox.position);
-            newbox.size = FPSEditor.snap(newbox.size, editor.editSnapSize * 2);
+            edit.saveNeeded = true;
+            newbox.position = snap(newbox.position);
+            newbox.size = snap(newbox.size, editSnapSize * 2);
             allBoxes.Add(newbox);
             //if(game1.rand.Next(5) == 0)
             //{
@@ -5350,7 +6663,7 @@ namespace MknGames.FPSWahtever
         //remove box
         public void RemoveBox(Box box)
         {
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
             if (terrainActive)
             {
                 BoundingBox bb = box.boundingBox;
@@ -5375,7 +6688,7 @@ namespace MknGames.FPSWahtever
         // move box
         public void MoveBox(Vector3 newPosition, Box box)
         {
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
             //Vector3 oldPosition = box.position;
             RemoveBox(box);
             box.position = newPosition;
@@ -5411,7 +6724,7 @@ namespace MknGames.FPSWahtever
         //resize box
         public void ResizeBox(Vector3 newSize, Box box)
         {
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
             //Vector3 oldPosition = box.position;
             RemoveBox(box);
             box.size = newSize;
@@ -5447,21 +6760,21 @@ namespace MknGames.FPSWahtever
         //refresh box (so that the terrain chunks can update)
         public void RefreshBox(Box box)
         {
-            editor.edit.saveNeeded = true;
+            edit.saveNeeded = true;
             RemoveBox(box);
             AddBox(box);
         }
         //save level
-        public void SaveLevel(string levelFilename)
+        void SaveLevel(string levelFilename)
         {
-            if (levelFilename == editor.currentLevelFilename)
-                editor.edit.saveNeeded = false;
+            if (levelFilename == currentLevelFilename)
+                edit.saveNeeded = false;
             using (StreamWriter writer = new StreamWriter(File.Create(levelFilename)))
             {
-                writer.WriteLine("player.playerSpawnPoint " +
-                    csvWriteV3(player.playerSpawnPoint));
+                writer.WriteLine("playerSpawnPoint " +
+                    csvWriteV3(playerSpawnPoint));
                 writer.WriteLine("playerSpawnEuler " + //playerSpawnEuler
-                    csvWriteV3(player.playerSpawnEuler));
+                    csvWriteV3(playerSpawnEuler));
                 for (int i = 0; i < targets.Length; ++i)
                 {
                     //BoundingSphere t = targets[i];
@@ -5490,15 +6803,15 @@ namespace MknGames.FPSWahtever
             }
         }
         //load level
-        public void loadlevel()
+        void loadlevel()
         {
-            editor.levelUnedited = true;
+            levelUnedited = true;
             allBoxes.Clear();
-            editor.edit.boxes.Clear();
+            edit.boxes.Clear();
             capturedTargets.Clear();
-            editor.editGun = null;
-            editor.edit.boxes.Clear();
-            editor.edit.target = -1;
+            editGun = null;
+            edit.boxes.Clear();
+            edit.target = -1;
             for (int i = 0; i < allguns.Count; ++i)
             {
                 if (!myGuns.Contains(allguns[i]))
@@ -5515,7 +6828,7 @@ namespace MknGames.FPSWahtever
                 if (bucket != null)
                     bucket.Clear();
             }
-            using (StreamReader reader = new StreamReader(File.Open(editor.currentLevelFilename, FileMode.Open)))
+            using (StreamReader reader = new StreamReader(File.Open(currentLevelFilename, FileMode.Open)))
             {
                 while (!reader.EndOfStream)
                 {
@@ -5559,11 +6872,11 @@ namespace MknGames.FPSWahtever
                                 csvParseV3(tokens[1]), float.Parse(tokens[2]));
                             AddTarget(newTarget);
                             break;
-                        case "player.playerSpawnPoint":
-                            player.playerSpawnPoint = csvParseV3(tokens[1]);
+                        case "playerSpawnPoint":
+                            playerSpawnPoint = csvParseV3(tokens[1]);
                             break;
                         case "playerSpawnEuler":
-                            player.playerSpawnEuler = csvParseV3(tokens[1]);
+                            playerSpawnEuler = csvParseV3(tokens[1]);
                             break;
                         case "gun": //load gun
                             Gun g = new Gun(0.05f, 0);
@@ -5575,7 +6888,7 @@ namespace MknGames.FPSWahtever
                     }
                 }
             }
-            editor.edit.saveNeeded = false;
+            edit.saveNeeded = false;
             SaveSettings(singlePlayerSaveFileName); //to save filename
         }
 
@@ -5922,7 +7235,7 @@ namespace MknGames.FPSWahtever
             }
             return false;
         }
-        public static float? IntersectRayGun(Ray ray, Gun G)
+        public float? IntersectRayGun(Ray ray, Gun G)
         {
             Vector3 up = Vector3.Transform(Vector3.Up, G.rot);
             Vector3 p = G.pos - up * G.size.Y / 2;
@@ -5995,11 +7308,11 @@ namespace MknGames.FPSWahtever
         //    cells.Add(endCoord);
         //    return cells.ToArray();
         //}
-        public Rectangle getzone(BoundingSphere bs)
+        Rectangle getzone(BoundingSphere bs)
         {
             return getzone(GameMG.MakeBox(bs.Center, new Vector3(bs.Radius)));
         }
-        public Rectangle getzone(Vector3 min, Vector3 max)
+        Rectangle getzone(Vector3 min, Vector3 max)
         {
             int minx = (int)Math.Floor((min.X + widthm / 2) / widthm);
             int maxx = (int)Math.Floor((max.X + widthm / 2) / widthm);
@@ -6007,7 +7320,7 @@ namespace MknGames.FPSWahtever
             int maxz = (int)Math.Floor((max.Z + depthm / 2) / depthm);
             return new Rectangle(minx, minz, maxx - minx, maxz - minz);
         }
-        public Rectangle getzone(BoundingBox bb)
+        Rectangle getzone(BoundingBox bb)
         {
             return getzone(bb.Min, bb.Max);
         }
@@ -6264,34 +7577,344 @@ namespace MknGames.FPSWahtever
             //clearList.Add(deferredBuffer0, deferredBufferDepth);
             //clearList.AddRange(cascadeShadowMaps);
             //GraphicsDevice.SetRenderTargets(deferredBuffer0, deferredBufferDepth, cascadeShadowMaps);
-            render3d.Clear();
+            clearfx.CurrentTechnique.Passes[0].Apply();
+            DrawScreenQuad();
 
 
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             //r:nx g:ny b:nz a:depth
             //setup draw shadows
-            Vector3 offset = Vector3.Zero;
-            if (editor.edit.active && editor.editOutOfBody)
-                offset = player.bodyState.pos;
-            else
-                offset = player.playerCam.pos;
-            render3d.PreRenderShadowSetup(offset, player.playerCam.view, player.playerCam.near, player.playerCam.fov);
+            Vector3 lightDir = Vector3.Normalize(renderLightDir);
+            for (int i = 0; i < shadowMapCount; ++i)
+            {
+                Vector3 offset = lightOffset;
+                if (i < shadowMapCount - 1)
+                {
+                    if (edit.active && editOutOfBody)
+                        offset = bodyState.pos;
+                    else
+                        offset = playerCam.pos;
+                }
+                shadowViews[i] = Matrix.CreateLookAt(offset - lightDir * shadowDistances[i] / 2, offset + lightDir * shadowDistances[i] / 2, Math.Abs(Vector3.Dot(lightDir, Vector3.Up)) > 0.9f ? Vector3.Right : Vector3.Up);
+                //Matrix shadowView = Matrix.CreateLookAt(bodyState.pos - lightDir * shadowDistance / 2, bodyState.pos, Vector3.Up);
+                //Matrix shadowProjection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(65), 1, 1, shadowDistance);
+                float step =(float) (i + 1) / (float)shadowMapCount;
+                shadowProjections[i] = Matrix.CreateOrthographic(shadowProjSizes[i], shadowProjSizes[i], 1, shadowDistances[i]);
+                shadowViewProjections[i] = shadowViews[i] * shadowProjections[i];
+            }
+            // draw calculate nonlinearcutoffs
+            for (int i = 0; i < cascadingNonLinearCutoffs.Length; ++i)
+            {
+                float near = playerCam.near;
+                if (i > 0)
+                {
+                    near = cascadingNonLinearCutoffs[i - 1];
+                }
+                float far = Math.Max(cascadingNonLinearCutoffs[i], near + 0.001f);
+                nonLinearMinsPlusRanges[i] = new Vector2(near, far - near);
+                cascadingNonLinearProjections[i] = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(playerCam.fov),
+                    GraphicsDevice.Viewport.AspectRatio, near, far);
+                cascadingInverseNonLinearProjections[i] = Matrix.Invert(cascadingNonLinearProjections[i]);
+                cascadingNonLinearVPs[i] = playerCam.view * cascadingNonLinearProjections[i];
+            }
 
-            render3d.Render(DrawCore, player.playerCam);
+            const int finalPass = shadowMapCount;
+            for (int i = 0; i < shadowMapCount+1; ++i)
+            {
+                int shadow = -1;
+                int pass = -1;
+                if(i > 0)
+                {
+                    GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.TransparentBlack, 1, 0);
+                }
+                if (i == finalPass)
+                {
+                    pass = 0; //color
+                    GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                    GraphicsDevice.SetRenderTargets(deferredBuffer0, deferredBufferDepth);
+                }
+                else
+                {
+                    pass = 1;//shadow
+                    shadow = i;
+                    GraphicsDevice.SetRenderTarget(cascadeShadowMaps[shadow]);
+                    if(shadowCullCounterclockwise[shadow])
+                        GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                    else
+                        GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+                    SetDeferredParametersShadows(shadow);
+                }
+                //draw boxes
+                instanceCubeIterator = 0;
+                foreach (Box b in allBoxes)
+                {
+                    instanceTransforms[instanceCubeIterator].position = new Vector4(b.position, 0);
+                    instanceTransforms[instanceCubeIterator++].scale = new Vector4(b.size / 2, 1);
+                }
+
+                //Matrix shadowView = playerCam.view;// Matrix.CreateLookAt(bodyState.pos - lightDir * distance / 2, bodyState.pos, Vector3.Up);
+                //Matrix shadowProjection = playerCam.projection;// Matrix.CreateOrthographic(100, 100, 1 / distance, distance);
+
+                SetDeferredParametersGeometry(Matrix.Identity, Matrix.Identity);
+                deferfx.CurrentTechnique = deferfx.Techniques["Instanced"];
+
+                instanceVertexBuffer.SetData(instanceTransforms, 0, instanceCubeIterator);
+                GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(instanceCubeVertexBuffer, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
+                GraphicsDevice.Indices = instanceCubeIndexBuffer;
+
+                deferfx.CurrentTechnique.Passes[pass].Apply();
+                    //        GraphicsDevice.RasterizerState = game1.wireFrameRs;
+                    GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 16, instanceCubeIterator);
+
+                //GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+
+                //draw guns
+                foreach (Gun g in allguns)
+                {
+                    drawgun(g, 1, false, Color.TransparentBlack, pass);
+                }
+
+                // draw player
+                for (int j = 0; j < bodyc; ++j)
+                {
+                    //break;
+                    if (!is3rdPerson && j == 0) continue;
+                    //game1.DrawModel(
+                    //    game1.sphereModel,
+                    //    Matrix.CreateScale(dropValue / 2) *
+                    //    Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (dropValue * (float)bodyc / 2 - dropValue / 2) + drop * j),
+                    //    playerCam.view,
+                    //    playerCam.projection,
+                    //    monochrome(0.5f),
+                    //    true,
+                    //    null);
+                    DrawModel(
+                        game1.sphereModel,
+                        Matrix.CreateScale(dropValue / 2) *
+                        Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (dropValue * (float)bodyc / 2 - dropValue / 2) + drop * j),
+                        Matrix.Identity,
+                        pass);
+                }
+
+                //draw bullets
+                instanceCubeIterator = 0;
+                foreach (Bullet b in allbullets)
+                {
+                    if (true)//b.phy.vel.LengthSquared() == 0)
+                    {
+                        instanceTransforms[instanceCubeIterator].position = new Vector4(b.phy.pos, 0);
+                        instanceTransforms[instanceCubeIterator++].scale = new Vector4(new Vector3(b.size / 2), 1);
+                        continue;
+                    }
+                    Vector3 vel = b.phy.vel;
+                    Vector3 pvel = vel / updatefps.fps;
+                    Vector3 A = b.phy.pos;
+                    Vector3 B = A + pvel;
+                    //volume of sphere = (4/3) * pi * r^3
+                    float volume =
+                        (4.0f / 3.0f) *
+                        MathHelper.Pi *
+                        (float)Math.Pow(b.size / 2, 3);
+                    //float s = bul.size;
+                    float l = (B - A).Length();
+                    float s = 0;
+                    //float amt = 10;
+                    //float currentRadius = b.size / 2;
+                    //float capsuleVolume = 0;
+                    //int iterations = 0;
+                    //float dif;
+                    //do
+                    //{
+                        ////get volume of capsule currently
+                        //float factorA = MathHelper.Pi * (currentRadius * currentRadius);
+                        //float factorB = (4f / 3f) * currentRadius + l;
+                        //capsuleVolume = factorA * factorB;
+                        ////check if its within a threshhold of the real volume
+                        //float vdelta = volume - capsuleVolume;
+                        //dif = Math.Abs(vdelta);
+                        ////shrink or grow radius by amount
+                        //currentRadius += 0.01f * vdelta;
+                        ////decrease amount
+                        ////amt *= 0.5f;
+                        ////if amount is very low than give up
+                        //iterations++;
+                    //} while (dif > 0.01f || iterations < 30);
+                    //s = currentRadius * 2;
+                    {
+                        //volume of cube = w * h * d
+                        //volume / d = w * h
+                        //h = w
+                        //volume / d = w ^ 2
+                        //w = sqrt(volume / d)
+                        s = (float)Math.Sqrt(volume / l);
+                    }
+                    if (b.skipNextAdvance)
+                        l = 0.01f;
+                    Vector3 up = Vector3.Up;
+                    float pv = pvel.Length();
+                    Vector3 dir = pvel / pv;
+                    if (Vector3.Dot(dir, up) > 0.98f)
+                        up = Vector3.Right;
+                    Vector3 start = A;
+                    Vector3 end = B;
+                    Matrix look = Matrix.CreateLookAt(start, end, up);
+                    float length = l;
+                    Matrix orientation = Matrix.Invert(look);
+                    Matrix world =
+                        Matrix.CreateTranslation(0, 0, -1) *
+                        Matrix.CreateScale(s / 2, s / 2, length / 2) *
+                        orientation;
+                    DrawModel(game1.cubeModel, world, orientation, pass);
+
+                    //Vector3 scale = new Vector3(s / 2);// - 0.1f);
+                    //instanceTransforms[instanceCubeIterator].position = new Vector4(start, 0);
+                    //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
+                    //instanceTransforms[instanceCubeIterator].position = new Vector4(end, 0);
+                    //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
+                }
+
+                SetDeferredParametersGeometry(Matrix.Identity, Matrix.Identity);
+                deferfx.CurrentTechnique = deferfx.Techniques["Instanced"];
+                ModelMeshPart sphMeshPart = surfaceSphere.Meshes[0].MeshParts[0];
+                //ModelMeshPart sphMeshPart = game1.sphereModel.Meshes[0].MeshParts[0];
+                instanceVertexBuffer.SetData(instanceTransforms, 0, instanceCubeIterator);
+                GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(sphMeshPart.VertexBuffer, 0), new VertexBufferBinding(instanceVertexBuffer, 0, 1));
+                GraphicsDevice.Indices = sphMeshPart.IndexBuffer;
+                deferfx.CurrentTechnique.Passes[pass].Apply();
+                    GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, sphMeshPart.PrimitiveCount, instanceCubeIterator);
+
+                if(i == finalPass)
+                {
+                    game1.DrawAll3dLines(playerCam.view, playerCam.projection);
+                    game1.Flush3dLines();
+
+                    //draw targets
+                    foreach (Target t in targets)
+                    {
+                        game1.DrawModel(game1.sphereModel,
+                            Matrix.CreateScale(t.Radius) *
+                            Matrix.CreateTranslation(t.Center),
+                            playerCam.view, playerCam.projection,
+                            monochrome(0.9f),
+                            true);
+                    }
+
+                    //draw selected boxes
+                    if (edit.active)
+                    {
+                        foreach (Box b in edit.boxes)
+                        {
+                            game1.DrawModel(game1.cubeModel,
+                                Matrix.CreateScale(b.size / 2) * Matrix.CreateScale(1.001f) *
+                                Matrix.CreateTranslation(b.position),
+                                playerCam.view,
+                                playerCam.projection,
+                                Color.Red,
+                                true);
+                        }
+                        if (editGun != null)
+                        {
+                            drawgun(editGun, 1.01f, true, Color.Red, 0);
+                        }
+                    }
+                    // draw wireframe
+                    GraphicsDevice.RasterizerState = game1.wireFrameRs;
+
+                    for (int j = 0; j < shadowMapCount; ++j)
+                    {
+                        break;
+                        var corners = new BoundingFrustum(shadowViews[j] * shadowProjections[j]).GetCorners();
+                        for (int k = 0; k < 4; ++k)
+                        {
+                            game1.add3DLine(corners[k], corners[(k + 1) % 4], Color.White);
+                            game1.add3DLine(corners[k + 4], corners[(k + 1) % 4 + 4], Color.Yellow);
+                            game1.add3DLine(corners[k], corners[k + 4], Color.White, Color.Yellow);
+                        }
+                    }
+
+                    //draw hover box
+                    if (edit.active)
+                    {
+                        if (edit.hoverbox != null)
+                        {
+                            game1.DrawModel(
+                                game1.cubeModel,
+                                Matrix.CreateScale(edit.hoverbox.size / 2) *
+                                Matrix.CreateScale(1.002f) *
+                                Matrix.CreateTranslation(edit.hoverbox.position),
+                                playerCam.view,
+                                playerCam.projection,
+                                Color.Blue,
+                                false);
+                        }
+                        if (editHoverGun != null)
+                        {
+                            drawgun(editHoverGun, 1.02f, true, Color.Yellow, 0);
+                        }
+                    }
+
+                    for(int j = 0; j < shadowMapCount; ++j)
+                        game1.DrawModel(game1.sphereModel, Matrix.Invert(shadowViews[j]), playerCam.view, playerCam.projection, Color.Blue, false);
+
+                    GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                }//end if i == 1
+            }
+
             //draw process
+                GraphicsDevice.SetRenderTargets(null);
+                GraphicsDevice.DepthStencilState = DepthStencilState.None;
+                processfx.Parameters["diffusetx"].SetValue(deferredBuffer0);
+                processfx.Parameters["tempNegLightDir"].SetValue(-lightDir);
+                processfx.Parameters["tempAmbient"].SetValue(renderLightAmbientValue);
+
+                processfx.Parameters["svp"].SetValue(shadowViewProjections);
+                processfx.Parameters["sv"].SetValue(shadowViews);
+                processfx.Parameters["sp"].SetValue(shadowProjections);
+                processfx.Parameters["sfar"].SetValue(shadowDistances);
+                processfx.Parameters["inverseView"].SetValue(Matrix.Invert(playerCam.view));
+                processfx.Parameters["inverseProjection"].SetValue(Matrix.Invert(playerCam.projection));
+                processfx.Parameters["inverseViewRotation"].SetValue(Matrix.Invert(Matrix.Invert(playerCam.rotation3D)));
+                processfx.Parameters["inverseNonLinearMatrices"].SetValue(cascadingInverseNonLinearProjections);
+                processfx.Parameters["nonLinearMatrices"].SetValue(cascadingNonLinearVPs);
+                processfx.Parameters["nonLinearCutoffs"].SetValue(cascadingNonLinearCutoffs);
+            processfx.Parameters["far"].SetValue(playerCam.far);
+            Vector3[] farFrustumCorners = GetFarFrustumCorners(playerCam.view, playerCam.projection);
+                Vector3[][] farFrustomCornersPlus = new Vector3[4][];
+                for (int i = 0; i < 4; ++i)
+                {
+                    farFrustomCornersPlus[i] = new Vector3[4];
+                    farFrustomCornersPlus[i] = GetFarFrustumCorners(cascadingNonLinearViews[i], cascadingNonLinearProjections[i]);
+                processfx.Parameters["farFrustumCornersPlus" + i].SetValue(farFrustomCornersPlus[i]);
+            }
+                processfx.Parameters["farFrustumCorners"].SetValue(farFrustumCorners);
+                processfx.Parameters["camPos"].SetValue(playerCam.pos);
+                processfx.Parameters["linearMinsPlusRanges"].SetValue(nonLinearMinsPlusRanges);
+                processfx.Parameters["nonlineartx"].SetValue(deferredBufferDepth);
+                processfx.Parameters["diffuseWidth"].SetValue((float)deferredBuffer0.Width);
+                processfx.Parameters["diffuseHeight"].SetValue((float)deferredBuffer0.Height);
+                processfx.Parameters["shadowDepthBias"].SetValue(cascadeShadowDepthBiasWorld);
+                processfx.Parameters["nonLinearCutoff"].SetValue(shadowNonLinearCutoff);
+            processfx.Parameters["softSampleDists"].SetValue(cascadeShadowSoftSampleDist);
+                processfx.CurrentTechnique.Passes[0].Apply();
+            for (int i = 0; i < shadowMapCount ; ++i) //this must go after apply
+            {
+                GraphicsDevice.Textures[i] = cascadeShadowMaps[i];
+                //processfx.Parameters["shadowtx"].SetValue(cascadeShadowMaps[i]);
+            }
+            DrawScreenQuad();
 
             ////draw 2d
             Rectangle debugWindow = Backpack.percentage(ViewBounds, 0, 0, 0.1f, 0.1f);
             string[] debugText = {
                 string.Format("U:{0:n2}/D:{1:n2}", updatefps.fps, drawfps.fps) ,
-            editor.currentLevelFilename
+            currentLevelFilename
             };
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
             
             if (game1.kdown(Keys.OemComma))
             {
-                spriteBatch.Draw(render3d.deferredBuffer0, ViewBounds, Color.White);
+                spriteBatch.Draw(deferredBuffer0, ViewBounds, Color.White);
             }
             for (int i = 0; i < debugText.Length; ++i)
             {
@@ -6305,11 +7928,11 @@ namespace MknGames.FPSWahtever
                 Rectangle preview2Rect = Backpack.percentage(ViewBounds, .8f, 0.8f, 0.2f, 0.2f);
                 if (game1.kdown(Keys.OemPeriod))
                     preview2Rect = ViewBounds;
-                spriteBatch.Draw(render3d.deferredBufferDepth, preview2Rect, Color.White);
-                for (int i = 0; i < Render3D.shadowMapCount; ++i)
+                spriteBatch.Draw(deferredBufferDepth, preview2Rect, Color.White);
+                for (int i = 0; i < shadowMapCount; ++i)
                 {
                     Rectangle previewRect = Backpack.percentage(ViewBounds, 0, 0.2f + 0.2f * (float)i, 0.2f, 0.2f);
-                    spriteBatch.Draw(render3d.cascadeShadowMaps[i], previewRect, Color.White);
+                    spriteBatch.Draw(cascadeShadowMaps[i], previewRect, Color.White);
                 }
             }
             //if (frustum.Contains(Vector3.Zero) == ContainmentType.Contains)
@@ -6319,223 +7942,39 @@ namespace MknGames.FPSWahtever
             spriteBatch.End();
         }//end draw
 
-        void DrawCore(int i, int pass)
+        private Vector3[] GetFarFrustumCorners(Matrix view, Matrix projection)
         {
-            const int finalPass = Render3D.shadowMapCount;
-            //draw boxes
-            render3d.instanceCubeIterator = 0;
-            foreach (Box b in allBoxes)
+            BoundingFrustum frustum = new BoundingFrustum(playerCam.view * playerCam.projection);
+            var cornersWS = frustum.GetCorners();
+            Vector3[] cornersVS = new Vector3[cornersWS.Length];
+            Vector3.Transform(cornersWS, ref playerCam.view, cornersVS);
+            Vector3[] farFrustumCorners = new Vector3[4];
+            for (int i = 0; i < 4; ++i)
             {
-                render3d.instanceTransforms[render3d.instanceCubeIterator].position = new Vector4(b.position, 0);
-                render3d.instanceTransforms[render3d.instanceCubeIterator++].scale = new Vector4(b.size / 2, 1);
+                //farFrustumCorners[i] = Vector3.Transform(cornersVS[i + 4], Matrix.Invert(playerCam.view));
+                farFrustumCorners[i] = cornersVS[i + 4];
             }
+            return farFrustumCorners;
+        }
 
-            //Matrix shadowView = playerCam.view;// Matrix.CreateLookAt(bodyState.pos - lightDir * distance / 2, bodyState.pos, Vector3.Up);
-            //Matrix shadowProjection = playerCam.projection;// Matrix.CreateOrthographic(100, 100, 1 / distance, distance);
+        private void SetDeferredParametersGeometry(Matrix world, Matrix orientation)
+        {
+            deferfx.Parameters["far"].SetValue(playerCam.far);
+            deferfx.Parameters["orientation"].SetValue(orientation);
+            deferfx.Parameters["world"].SetValue(world);
+            deferfx.Parameters["view"].SetValue(playerCam.view);
+            deferfx.Parameters["projection"].SetValue(playerCam.projection);
+            deferfx.Parameters["nonLinearMatrices"].SetValue(cascadingNonLinearProjections);
+            deferfx.Parameters["viewRotation"].SetValue(playerCam.rotation3D);
+            deferfx.Parameters["linearMinsPlusRanges"].SetValue(nonLinearMinsPlusRanges);
+        }
 
-            render3d.SetDeferredParametersGeometry(player.playerCam, Matrix.Identity, Matrix.Identity);
-            render3d.deferfx.CurrentTechnique = render3d.deferfx.Techniques["Instanced"];
-
-            render3d.instanceVertexBuffer.SetData(render3d.instanceTransforms, 0, render3d.instanceCubeIterator);
-            GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(render3d.instanceCubeVertexBuffer, 0), new VertexBufferBinding(render3d.instanceVertexBuffer, 0, 1));
-            GraphicsDevice.Indices = render3d.instanceCubeIndexBuffer;
-
-            render3d.deferfx.CurrentTechnique.Passes[pass].Apply();
-            //        GraphicsDevice.RasterizerState = game1.wireFrameRs;
-            GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, 16, render3d.instanceCubeIterator);
-
-            //GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-
-            //draw guns
-            foreach (Gun g in allguns)
-            {
-                drawgun(g, 1, false, Color.TransparentBlack, pass);
-            }
-
-            // draw player
-            for (int j = 0; j < player.bodyc; ++j)
-            {
-                //break;
-                if (!player.is3rdPerson && j == 0) continue;
-                //game1.DrawModel(
-                //    game1.sphereModel,
-                //    Matrix.CreateScale(player.dropValue / 2) *
-                //    Matrix.CreateTranslation(bodyState.pos + Vector3.Up * (player.dropValue * (float)player.bodyc / 2 - player.dropValue / 2) + drop * j),
-                //    playerCam.view,
-                //    playerCam.projection,
-                //    monochrome(0.5f),
-                //    true,
-                //    null);
-                DrawModel(
-                    game1.sphereModel,
-                    Matrix.CreateScale(player.dropValue / 2) *
-                    Matrix.CreateTranslation(player.bodyState.pos + Vector3.Up * (player.dropValue * (float)player.bodyc / 2 - player.dropValue / 2) + player.drop * j),
-                    Matrix.Identity,
-                    pass);
-            }
-
-            //draw bullets
-            render3d.instanceCubeIterator = 0;
-            foreach (Bullet b in allbullets)
-            {
-                if (true)//b.phy.vel.LengthSquared() == 0)
-                {
-                    render3d.instanceTransforms[render3d.instanceCubeIterator].position = new Vector4(b.phy.pos, 0);
-                    render3d.instanceTransforms[render3d.instanceCubeIterator++].scale = new Vector4(new Vector3(b.size / 2), 1);
-                    continue;
-                }
-                Vector3 vel = b.phy.vel;
-                Vector3 pvel = vel / updatefps.fps;
-                Vector3 A = b.phy.pos;
-                Vector3 B = A + pvel;
-                //volume of sphere = (4/3) * pi * r^3
-                float volume =
-                    (4.0f / 3.0f) *
-                    MathHelper.Pi *
-                    (float)Math.Pow(b.size / 2, 3);
-                //float s = bul.size;
-                float l = (B - A).Length();
-                float s = 0;
-                //float amt = 10;
-                //float currentRadius = b.size / 2;
-                //float capsuleVolume = 0;
-                //int iterations = 0;
-                //float dif;
-                //do
-                //{
-                ////get volume of capsule currently
-                //float factorA = MathHelper.Pi * (currentRadius * currentRadius);
-                //float factorB = (4f / 3f) * currentRadius + l;
-                //capsuleVolume = factorA * factorB;
-                ////check if its within a threshhold of the real volume
-                //float vdelta = volume - capsuleVolume;
-                //dif = Math.Abs(vdelta);
-                ////shrink or grow radius by amount
-                //currentRadius += 0.01f * vdelta;
-                ////decrease amount
-                ////amt *= 0.5f;
-                ////if amount is very low than give up
-                //iterations++;
-                //} while (dif > 0.01f || iterations < 30);
-                //s = currentRadius * 2;
-                {
-                    //volume of cube = w * h * d
-                    //volume / d = w * h
-                    //h = w
-                    //volume / d = w ^ 2
-                    //w = sqrt(volume / d)
-                    s = (float)Math.Sqrt(volume / l);
-                }
-                if (b.skipNextAdvance)
-                    l = 0.01f;
-                Vector3 up = Vector3.Up;
-                float pv = pvel.Length();
-                Vector3 dir = pvel / pv;
-                if (Vector3.Dot(dir, up) > 0.98f)
-                    up = Vector3.Right;
-                Vector3 start = A;
-                Vector3 end = B;
-                Matrix look = Matrix.CreateLookAt(start, end, up);
-                float length = l;
-                Matrix orientation = Matrix.Invert(look);
-                Matrix world =
-                    Matrix.CreateTranslation(0, 0, -1) *
-                    Matrix.CreateScale(s / 2, s / 2, length / 2) *
-                    orientation;
-                DrawModel(game1.cubeModel, world, orientation, pass);
-
-                //Vector3 scale = new Vector3(s / 2);// - 0.1f);
-                //instanceTransforms[instanceCubeIterator].position = new Vector4(start, 0);
-                //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
-                //instanceTransforms[instanceCubeIterator].position = new Vector4(end, 0);
-                //instanceTransforms[instanceCubeIterator++].scale = new Vector4(scale, 1);
-            }
-
-            render3d.SetDeferredParametersGeometry(player.playerCam, Matrix.Identity, Matrix.Identity);
-            render3d.deferfx.CurrentTechnique = render3d.deferfx.Techniques["Instanced"];
-            ModelMeshPart sphMeshPart = surfaceSphere.Meshes[0].MeshParts[0];
-            //ModelMeshPart sphMeshPart = game1.sphereModel.Meshes[0].MeshParts[0];
-            render3d.instanceVertexBuffer.SetData(render3d.instanceTransforms, 0, render3d.instanceCubeIterator);
-            GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(sphMeshPart.VertexBuffer, 0), new VertexBufferBinding(render3d.instanceVertexBuffer, 0, 1));
-            GraphicsDevice.Indices = sphMeshPart.IndexBuffer;
-            render3d.deferfx.CurrentTechnique.Passes[pass].Apply();
-            GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, sphMeshPart.PrimitiveCount, render3d.instanceCubeIterator);
-
-            if (i == finalPass)
-            {
-                game1.DrawAll3dLines(player.playerCam.view, player.playerCam.projection);
-                game1.Flush3dLines();
-
-                //draw targets
-                foreach (Target t in targets)
-                {
-                    game1.DrawModel(game1.sphereModel,
-                        Matrix.CreateScale(t.Radius) *
-                        Matrix.CreateTranslation(t.Center),
-                        player.playerCam.view, player.playerCam.projection,
-                        monochrome(0.9f),
-                        true);
-                }
-
-                //draw selected boxes
-                if (editor.edit.active)
-                {
-                    foreach (Box b in editor.edit.boxes)
-                    {
-                        game1.DrawModel(game1.cubeModel,
-                            Matrix.CreateScale(b.size / 2) * Matrix.CreateScale(1.001f) *
-                            Matrix.CreateTranslation(b.position),
-                            player.playerCam.view,
-                            player.playerCam.projection,
-                            Color.Red,
-                            true);
-                    }
-                    if (editor.editGun != null)
-                    {
-                        drawgun(editor.editGun, 1.01f, true, Color.Red, 0);
-                    }
-                }
-                // draw wireframe
-                GraphicsDevice.RasterizerState = game1.wireFrameRs;
-
-                for (int j = 0; j < Render3D.shadowMapCount; ++j)
-                {
-                    break;
-                    var corners = new BoundingFrustum(render3d.shadowViews[j] * render3d.shadowProjections[j]).GetCorners();
-                    for (int k = 0; k < 4; ++k)
-                    {
-                        game1.add3DLine(corners[k], corners[(k + 1) % 4], Color.White);
-                        game1.add3DLine(corners[k + 4], corners[(k + 1) % 4 + 4], Color.Yellow);
-                        game1.add3DLine(corners[k], corners[k + 4], Color.White, Color.Yellow);
-                    }
-                }
-
-                //draw hover box
-                if (editor.edit.active)
-                {
-                    if (editor.edit.hoverbox != null)
-                    {
-                        game1.DrawModel(
-                            game1.cubeModel,
-                            Matrix.CreateScale(editor.edit.hoverbox.size / 2) *
-                            Matrix.CreateScale(1.002f) *
-                            Matrix.CreateTranslation(editor.edit.hoverbox.position),
-                            player.playerCam.view,
-                            player.playerCam.projection,
-                            Color.Blue,
-                            false);
-                    }
-                    if (editor.editHoverGun != null)
-                    {
-                        drawgun(editor.editHoverGun, 1.02f, true, Color.Yellow, 0);
-                    }
-                }
-
-                for (int j = 0; j < Render3D.shadowMapCount; ++j)
-                    game1.DrawModel(game1.sphereModel, Matrix.Invert(render3d.shadowViews[j]), player.playerCam.view, player.playerCam.projection, Color.Blue, false);
-
-                GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-            }//end if i == 1
+        private void SetDeferredParametersShadows(int cascade)
+        {
+            deferfx.Parameters["sw"].SetValue(Matrix.Identity);
+            deferfx.Parameters["sv"].SetValue(shadowViews[cascade]);
+            deferfx.Parameters["sp"].SetValue(shadowProjections[cascade]);
+            deferfx.Parameters["shadowFar"].SetValue(shadowDistances[cascade]);
         }
 
         //draw boxes
@@ -6614,15 +8053,15 @@ namespace MknGames.FPSWahtever
         //                        playerSpawnEuler.X,
         //                        playerSpawnEuler.Z);
         //                game1.DrawModel(game1.cubeModel,
-        //                    Matrix.CreateScale(player.dropValue / 2, 1, player.dropValue / 2) *
+        //                    Matrix.CreateScale(dropValue / 2, 1, dropValue / 2) *
         //                    playerSpawnRot *
-        //                    Matrix.CreateTranslation(player.playerSpawnPoint),
+        //                    Matrix.CreateTranslation(playerSpawnPoint),
         //                    playerCam.view,
         //                    playerCam.projection,
         //                    Color.Purple,
         //                    false);
         //                Vector3 forward = Vector3.Transform(Vector3.Forward, playerSpawnRot);
-        //                game1.add3DLine(player.playerSpawnPoint, player.playerSpawnPoint + forward, Color.Green);
+        //                game1.add3DLine(playerSpawnPoint, playerSpawnPoint + forward, Color.Green);
 
         //                //draw target starting positions
         //                for (int i = 0; i < targets.Length; ++i)
@@ -6767,15 +8206,15 @@ namespace MknGames.FPSWahtever
         //draw network players
         //foreach (var pair in networkplayerdata)
         //{
-        //    //Matrix scale = Matrix.CreateScale(player.dropValue / 2);
+        //    //Matrix scale = Matrix.CreateScale(dropValue / 2);
         //    Vector3 pos = pair.Value.pos;
-        //    Vector3 headOffset = Vector3.Up * (height / 2 - player.dropValue / 2);
+        //    Vector3 headOffset = Vector3.Up * (height / 2 - dropValue / 2);
         //    Vector3 headPos = pos + headOffset;
         //    //Vector3 footPos = pos - headOffset;
         //    bool lighting = true;
         //    game1.DrawModel(game1.cubeModel,
-        //        Matrix.CreateScale(player.dropValue/2, player.dropValue/2, player.dropValue/8) *
-        //        Matrix.CreateTranslation(0, 0, -player.dropValue/3) *
+        //        Matrix.CreateScale(dropValue/2, dropValue/2, dropValue/8) *
+        //        Matrix.CreateTranslation(0, 0, -dropValue/3) *
         //        pair.Value.gun.rot *
         //        Matrix.CreateTranslation(headPos),
         //        playerCam.view, playerCam.projection, monochrome(0.75f), lighting);
@@ -6795,9 +8234,9 @@ namespace MknGames.FPSWahtever
         //    //    Matrix.CreateTranslation(pair.Value.pos - Vector3.Up * 0.5f),
         //    //    camera.view, camera.projection, monochrome(0.25f), false);
         //    Vector3 tiptop = pair.Value.pos + (height / 2) * Vector3.Up;
-        //    for (int i = player.bodyc - 1; i >= 0; --i)
+        //    for (int i = bodyc - 1; i >= 0; --i)
         //    {
-        //        BoundingSphere sv = new BoundingSphere(tiptop + drop * i + drop / 2, player.dropValue / 2);
+        //        BoundingSphere sv = new BoundingSphere(tiptop + drop * i + drop / 2, dropValue / 2);
         //        game1.DrawModel(game1.sphereModel,
         //            Matrix.CreateScale(sv.Radius) *
         //            Matrix.CreateTranslation(sv.Center),
@@ -7018,7 +8457,7 @@ namespace MknGames.FPSWahtever
         //                if (doShadow)
         //                {
         //                    game1.DrawModel(model,
-        //                        Matrix.CreateScale(targets[t].Radius * (1 + 0.5f * Math.Max(0, targets[t].Center.Y - plane.D) / (height - player.dropValue / 2))) *
+        //                        Matrix.CreateScale(targets[t].Radius * (1 + 0.5f * Math.Max(0, targets[t].Center.Y - plane.D) / (height - dropValue / 2))) *
         //                        Matrix.CreateTranslation(targets[t].Center) * shadow,
         //                        playerCam.view, playerCam.projection, monochrome(0.25f, 0.5f), false);
         //                }
@@ -7209,13 +8648,13 @@ namespace MknGames.FPSWahtever
         //            //    //    Matrix.CreateScale())
         //            //}
         //            //draw player
-        //            float heightPercentage = (float)player.bodyc / (float)player.sphereBodyCount;
+        //            float heightPercentage = (float)bodyc / (float)sphereBodyCount;
         //            float totalHeight = height * heightPercentage;
         //            Vector3 top = bodyState.pos + (totalHeight / 2) * Vector3.Up;
         //            //Vector3 top = bodyState.pos + (height / 2) * Vector3.Up;
-        //            for (int i = player.bodyc - 1; i >= 0; --i)
+        //            for (int i = bodyc - 1; i >= 0; --i)
         //            {
-        //                BoundingSphere sv = new BoundingSphere(top + drop * i + drop / 2, player.dropValue / 2);
+        //                BoundingSphere sv = new BoundingSphere(top + drop * i + drop / 2, dropValue / 2);
         //                game1.DrawModel(game1.sphereModel,
         //                    Matrix.CreateScale(sv.Radius) *
         //                    Matrix.CreateTranslation(sv.Center),
@@ -7296,9 +8735,9 @@ namespace MknGames.FPSWahtever
         //            //personf.Normalize();
         //            //BoundingSphere eyesv = new BoundingSphere(person.pos, 15f);
         //            //person.detected = false;
-        //            //    for (int i = 0; i < player.bodyc; ++i)
+        //            //    for (int i = 0; i < bodyc; ++i)
         //            //{
-        //            //    BoundingSphere sv = new BoundingSphere(top + drop * i + drop / 2, player.dropValue / 2);
+        //            //    BoundingSphere sv = new BoundingSphere(top + drop * i + drop / 2, dropValue / 2);
         //            //    //if (frust.Intersects(sv))
         //            //    //{
         //            //    //    person.detected = true;
@@ -7623,9 +9062,9 @@ namespace MknGames.FPSWahtever
         //                        monochrome(1.0f));
         //                }
 
-        //                if (frust.Contains(player.playerSpawnPoint) == ContainmentType.Contains)
+        //                if (frust.Contains(playerSpawnPoint) == ContainmentType.Contains)
         //                {
-        //                    DrawWorldLabel2D(player.playerSpawnPoint, "player spawn", 128, 32);
+        //                    DrawWorldLabel2D(playerSpawnPoint, "player spawn", 128, 32);
         //                }
         //                //draw selection 2d, draw selection labels, draw box labels
         //                //for(int i = 0; i <= edit.boxes.Count; ++i)
@@ -7927,7 +9366,7 @@ namespace MknGames.FPSWahtever
             float fill = 0.5f;
             if (mouseHover(buttonRect))
             {
-                editor.mouseUi = buttonRect;
+                mouseUi = buttonRect;
                 fill = 0.6f;
                 if (game1.lmouse)
                 {
@@ -7967,9 +9406,9 @@ namespace MknGames.FPSWahtever
         //helper draw
         void DrawModel(Model m, Matrix w, Matrix orientation, int pass)
         {
-            render3d.SetDeferredParametersGeometry(player.playerCam, w, orientation);
-            render3d.deferfx.CurrentTechnique = render3d.deferfx.Techniques["Default"];
-            render3d.deferfx.CurrentTechnique.Passes[pass].Apply();
+            SetDeferredParametersGeometry(w, orientation);
+            deferfx.CurrentTechnique = deferfx.Techniques["Default"];
+            deferfx.CurrentTechnique.Passes[pass].Apply();
             ModelMeshPart meshPart = m.Meshes[0].MeshParts[0];
             GraphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
             GraphicsDevice.Indices = meshPart.IndexBuffer;
@@ -7991,7 +9430,7 @@ namespace MknGames.FPSWahtever
         }
         void DrawWorldLabel2D(Vector3 position, string text, float width, float height)
         {
-            Vector2 screen = player.playerCam.worldToScreen(position, GraphicsDevice.Viewport);
+            Vector2 screen = playerCam.worldToScreen(position, GraphicsDevice.Viewport);
             Rectangle rect = game1.centeredRect(screen, width, height);
             game1.drawSquare(rect, monochrome(0.0f, 0.3f), 0);
             game1.drawString(text, rect, monochrome(1.0f), new Vector2(0.5f, 0.5f), true);
@@ -8039,7 +9478,7 @@ namespace MknGames.FPSWahtever
                     //Matrix.CreateTranslation(0, 1-g.bulletSize/2, 0) *
                     world,
                     //Matrix.CreateTranslation(camera.Position3D), 
-                    player.playerCam.view, player.playerCam.projection, color);
+                    playerCam.view, playerCam.projection, color);
             }
             else
             {
@@ -8372,5 +9811,15 @@ namespace MknGames.FPSWahtever
 
         //    instanceIterator = 0;
         //}
+        public void DrawScreenQuad()
+        {
+            GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
+                quadVertices,
+                0,
+                4,
+                quadIndices,
+                0,
+                2);
+        }
     }
 }

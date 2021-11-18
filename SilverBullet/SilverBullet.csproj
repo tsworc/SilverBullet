@@ -55,6 +55,7 @@
     <Compile Include="General\SaveLoadVariable.cs" />
     <Compile Include="General\SignalADSRState.cs" />
     <Compile Include="General\SmallFPSEditState.cs" />
+    <Compile Include="General\SoundSystem.cs" />
     <Compile Include="General\StateMachine.cs" />
     <Compile Include="General\Target.cs" />
     <Compile Include="Editor\EditSmallFPSForm.cs">
@@ -78,7 +79,7 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="NAudio">
-      <HintPath>..\..\..\..\SplitScreenDungeonAndroid\NAudio-1.8.0-Release\NAudio.dll</HintPath>
+      <HintPath>..\NAudio-1.8.0-Release\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -94,12 +95,6 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\SplitScreenDungeonAndroid\MakinGames\MakinGames\MakinGames.csproj">
-      <Project>{7ad14baf-ec03-4cb0-ac02-0cda13d4f198}</Project>
-      <Name>MakinGames</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Editor\EditSmallFPSForm.resx">
       <DependentUpon>EditSmallFPSForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +102,12 @@
   <ItemGroup>
     <Folder Include="Content\bin\" />
     <Folder Include="Content\obj\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MakinGames\MakinGames\MakinGames.csproj">
+      <Project>{7ad14baf-ec03-4cb0-ac02-0cda13d4f198}</Project>
+      <Name>MakinGames</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
